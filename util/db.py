@@ -99,11 +99,22 @@ class DB(object):
     def rollback(self):
         self._db.rollback()
 
-    def scalar(self, *a, **kw):
-        res = self.execute(*a, **kw).fetchone()
-        if res:
-            return res[0]
-        return None
+    # def scalar(self, base):
+        # res = self.execute(*a, **kw).fetchone()
+        # if res:
+        #     return res[0]
+        # return None
+
+    def getParentId(self, base, onlineId):
+        """获取parentId"""
+        query = self.se.query(base.parentId).filter(base.onlineId == onlineId)
+        res = query.scalar()
+        return res
+
+    def updateParentId(self, base, onlineId, parentId):
+        """更新parentId"""
+        self.se.query(base).filter(base.onlineId == onlineId).update({"parentId": parentId})
+        self.se.commit()
 
     def all(self, *a, **kw):
         return self.execute(*a, **kw).fetchall()
@@ -115,21 +126,21 @@ class DB(object):
         return res
 
     def lis(self, base):
-        '''返回title列表'''
+        """返回title列表"""
         s = select([base.title])
         res = s.execute().fetchall()
         df = pd.DataFrame(res, columns=['title'])
         return list(df['title']) #将这一栏转为列表
 
 #def lis(base):
-#    '''返回title列表'''
+#    """返回title列表"""
 #    s = select([base.title])
 #    res = s.execute().fetchall()
 #    df =pd.DataFrame(res, columns=['title'])
 #    return list(df['title']) #将这一栏转为列表
 #
 #def dic(base):
-#    '''返回字典，k,v = onlineId,title'''
+#    """返回字典，k,v = onlineId,title"""
 #    s = select([base.onlineId, base.title])
 #    res = s.execute().fetchall()
 #    d = {}
@@ -138,7 +149,7 @@ class DB(object):
 #    return d
         
     def dic(self, base, parentId=None):
-        '''返回字典，k,v = onlineId,title'''
+        """返回字典，k,v = onlineId,title"""
 #        s = select([base.onlineId, base.title])
         query = self.se.query(base).order_by(base.id)
 #        s = select([tasks.c.title, tasks.c.onlineId], tasks.c.title != '云手') 
