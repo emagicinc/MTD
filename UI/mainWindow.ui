@@ -553,7 +553,7 @@
           </property>
           <layout class="QVBoxLayout" name="verticalLayout">
            <property name="spacing">
-            <number>3</number>
+            <number>0</number>
            </property>
            <property name="margin">
             <number>0</number>
@@ -562,13 +562,13 @@
             <widget class="QLineEdit" name="searchLE">
              <property name="minimumSize">
               <size>
-               <width>163</width>
+               <width>191</width>
                <height>24</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
-               <width>163</width>
+               <width>191</width>
                <height>24</height>
               </size>
              </property>
@@ -940,7 +940,7 @@
              <property name="sizeHint" stdset="0">
               <size>
                <width>20</width>
-               <height>65</height>
+               <height>92</height>
               </size>
              </property>
             </spacer>
@@ -957,7 +957,7 @@
            </sizepolicy>
           </property>
           <property name="currentIndex">
-           <number>3</number>
+           <number>5</number>
           </property>
           <widget class="QWidget" name="homePage">
            <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1618,6 +1618,19 @@
              </layout>
             </item>
            </layout>
+          </widget>
+          <widget class="QWidget" name="resultPage">
+           <widget class="QWidget" name="verticalLayoutWidget">
+            <property name="geometry">
+             <rect>
+              <x>39</x>
+              <y>49</y>
+              <width>211</width>
+              <height>151</height>
+             </rect>
+            </property>
+            <layout class="QVBoxLayout" name="resultLayout"/>
+           </widget>
           </widget>
          </widget>
         </item>
