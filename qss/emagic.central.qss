@@ -1,0 +1,13 @@
+
+
+*{
+  font-size:13px;
+  font-family:"Microsoft YaHei";
+}
+QWidget{
+     background:#FFFFFF;
+}
+QWidget#centralwidget{
+    border-right: 1px solid #808080;
+    border-bottom: 1px solid #808080;
+}

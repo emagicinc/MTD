@@ -1,0 +1,89 @@
+
+
+*{
+  font-size:13px;
+  color:white;
+  font-family:"Microsoft YaHei";
+}
+
+QPushButton,QToolButton{
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                 stop: 0 #5B5F5F, stop: 0.5 #0C2436,
+                                 stop: 1.0 #27405A);
+    border-style: outset;
+    border-width: 1px;
+    border-radius: 2px;
+    border-color: #11223F;
+    font-family:"Microsoft YaHei";
+    padding: 5px;
+    font-weight: 500;
+    text-align : left;
+    /*min-width: 9ex;
+    min-height: 2.5ex;*/
+}
+
+QPushButton::hover,QToolButton::hover{
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                 stop: 0 #758385, stop: 0.5 #122C39,
+                                 stop: 1.0 #0E7788);
+    border-color: #11505C;
+}
+QPushButton::flat{
+    background: transparent;
+    border-color: transparent;
+}
+QPushButton::pressed,QToolButton::pressed{
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                 stop: 0 #3C79F2, stop: 0.5 #3C79F2,
+                                 stop: 1.0 #3C79F2);
+    border-color: #11505C;
+    font-weight: bold;
+    font-family:"Microsoft YaHei";
+}
+QPushButton::checked,QToolButton::checked{
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                 stop: 0 #3C79F2, stop: 0.5 #3C79F2,
+                                 stop: 1.0 #3C79F2);
+    border-color: #11505C;
+    font-weight: bold;
+    font-family:"Microsoft YaHei";
+}
+QPushButton::disabled,QToolButton::disabled{
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                 stop: 0 #282B2C, stop: 0.5 #09121A,
+                                 stop: 1.0 #111D29);
+    border-color: #0A1320;
+    color:#6A6864;
+}
+
+QDialog QPushButton,QDialog QToolButton{
+  min-width:30px;
+  min-height:23px;
+}
+
+ QGroupBox {
+     border: 1px solid #18202E;
+     border-radius: 2px;
+     background-color: #18202E;
+     margin-top: 0ex; /* leave space at the top for the title */
+ }
+
+ QGroupBox::title {
+     subcontrol-origin: margin;
+     subcontrol-position: top left;
+     padding: 0 3px;
+     background-color: transparent;
+ }
+
+  QGroupBox::indicator {
+     width: 13px;
+     height: 13px;
+ }
+
+ QGroupBox::indicator:unchecked {
+     image: url(:/qss/checkbox_unchecked.png);
+ }
+QGroupBox::indicator:checked {
+     image: url(:/qss/checkbox_checked.png);
+}
+

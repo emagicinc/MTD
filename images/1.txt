@@ -1,0 +1,59 @@
+ 驱动器 C 中的卷是 BOOTCAMP
+ 卷的序列号是 8CE8-5354
+
+ c:\Python34\subeditor\images 的目录
+
+2016/11/29  16:14    <DIR>          .
+2016/11/29  16:14    <DIR>          ..
+2016/11/29  16:14                 0 1.txt
+2016/11/23  13:59               518 add-black.png
+2015/11/01  11:28             4,261 add.png
+2014/10/19  02:11             3,623 analyze.png
+2014/11/05  21:57             1,234 angle.png
+2014/10/23  09:21             4,558 back.png
+2014/10/23  09:15             4,191 backDark.png
+2016/11/29  16:14    <DIR>          bak
+2016/11/23  13:51               660 bottom.png
+2014/10/19  02:06            10,408 box.png
+2014/10/23  03:50             3,272 close.png
+2014/10/23  03:48             3,392 closeDark.png
+2014/10/31  11:46             4,404 course.png
+2016/11/23  13:59               798 delete.png
+2015/11/01  11:32             4,790 deleteLine.png
+2016/11/23  13:53               438 down.png
+2014/10/26  21:41             1,131 downArrow.png
+2016/11/17  09:18               964 edit.png
+2014/11/06  13:24            12,161 exit.png
+2014/11/06  13:24            10,575 exitDark.png
+2016/11/23  13:51               565 first.png
+2016/11/23  15:24             1,367 icon.png
+2014/10/21  18:43             1,380 import.png
+2016/11/23  13:52               587 last.png
+2014/10/31  21:02            16,786 leftArrow.png
+2014/11/06  10:35             9,232 logo.png
+2013/12/01  08:50            72,620 logo_paktools.psd
+2014/10/23  03:54             1,308 maximize.png
+2014/10/23  03:38             1,305 maximizeDark.png
+2014/10/23  03:54             1,281 minimize.png
+2014/10/23  03:38             1,289 minimizeDark.png
+2016/11/23  14:00               300 minus-black.png
+2016/10/16  19:19             9,954 newChap.png
+2016/10/16  19:19             7,889 newChapDark.png
+2016/10/16  19:17             6,341 newCourse.png
+2016/10/16  19:17            10,536 newCourseDark.png
+2016/11/23  13:53               451 next.png
+2016/11/23  13:38               969 numDown.png
+2016/11/23  14:07            16,363 numUp.png
+2016/11/23  13:59               659 ok.png
+2014/10/19  02:00             4,030 option.png
+2014/10/23  03:33             3,983 optionDark.png
+2014/10/23  03:33             3,925 optionHover.png
+2016/11/23  13:53               471 prev.png
+2016/11/23  13:53               471 previous.png
+2016/11/29  16:08               698 save-black.png
+2014/10/19  02:16            16,362 search.png
+2014/10/19  02:58             2,237 searching.png
+2016/11/23  13:52               672 top.png
+2016/11/23  14:03               460 up.png
+              49 个文件        265,869 字节
+               3 个目录 12,577,976,320 可用字节

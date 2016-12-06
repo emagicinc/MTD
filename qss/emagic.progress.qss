@@ -1,0 +1,54 @@
+
+
+*{
+  font-size:13px;
+  color:white;
+  font-family:"Microsoft YaHei";
+}
+QWidget{
+    background:transparent;
+}
+
+QPushButton,QToolButton{
+    background: transparent;
+    color: #D5EDFF;
+    font-size:16px;
+    border:1px solid #3D9EF3;
+    font-family:"Microsoft YaHei";
+}
+
+QPushButton:hover{
+    color: #ffffff;
+    background: #06B025;
+}
+
+/*
+QPushButton::pressed{
+    background: transparent;
+    font-weight: bold;
+}
+*/
+
+
+QProgressBar#progressBar{
+    border:none;
+    background:qlineargradient(x1:0, y1:0, x2:0, y2:1,
+    stop:0 #11A1EE, stop: 1 #0275C4);
+    border-radius:3px;
+    text-align:center;
+    font-size:26px;
+}
+
+ /*
+QProgressBar::chunk#progressBar{
+    background:#2E98D9;
+    border-radius:3px;
+}
+*/
+
+QLabel{
+    background:transparent;
+}
+QLabel#progLbl{
+    font-size:32px;
+}

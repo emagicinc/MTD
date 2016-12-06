@@ -1,0 +1,93 @@
+
+
+*{
+  font-size:13px;
+  color:white;
+  font-family:"Microsoft YaHei";
+}
+QWidget{
+    background:#1162A0;
+}
+
+QWidget#topWidget{
+    border:none;
+    border-right: 1px solid #1162A0;
+}
+
+QPushButton,QToolButton{
+    background: transparent;
+    color: #4C89B7;
+    font-size:24px;
+}
+
+/*
+QPushButton:hover{
+    color: #ffffff;
+    background: transparent;
+}
+
+QPushButton::pressed{
+    background: transparent;
+    font-weight: bold;
+    font-family:"Microsoft YaHei";
+}
+*/
+
+QPushButton#settingsBtn::hover{
+  background: transparent;   
+  border:none;   
+  image:url(:/images/option.png);
+}
+
+QPushButton#exitBtn::hover{
+  background: transparent;   
+  border:none;   
+  image:url(:/images/exit.png);
+}
+
+QPushButton#minimizeBtn::hover{
+  background: transparent;   
+  border:none;   
+  image:url(:/images/minimize.png);
+}
+/*
+QPushButton#maximizeBtn::hover{
+  background: transparent;   
+  border:none;   
+  left: -3px;
+  image:url(:/images/maximize.png);
+}
+*/
+QPushButton#closeBtn::hover{
+  background: transparent;   
+  border:none; 
+  image:url(:/images/close.png);
+}
+
+QPushButton#closeBtn{
+  background: transparent;   
+  border:none;   
+  image:url(:/images/closeDark.png);
+}
+
+QPushButton#maximizeBtn{
+  background: transparent;   
+  border:none;   
+  image:url(:/images/maximizeDark.png);
+}
+
+QPushButton#minimizeBtn{
+  background: transparent;   
+  border:none;   
+  image:url(:/images/minimizeDark.png);
+}
+
+QLineEdit#searchLE {
+    border: 0px solid #999999;
+    /* border-top:none;
+    border-left:none;
+    border-right:none;*/
+    border-radius: 10px;
+    /* padding: 0 8px; */
+    background: #246EA7;
+}

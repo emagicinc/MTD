@@ -1,0 +1,161 @@
+
+
+*{
+    font-size:13px;
+    color:#333333;
+    font-family:"Microsoft YaHei";
+}
+QWidget{
+    background:#FFFFFF;
+}
+
+QWidget#mainWidget{
+    border:none;
+    border-right: 1px solid #808080;
+}
+
+QPushButton{
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                 stop: 0 #F5F6F7, stop: 0.4 #F2F3F5,
+                                 stop: 0.5 #F2F3F5, stop: 1.0 #F5F6F7);
+    color:#333333;
+    border:none;
+}
+
+QPushButton::hover{
+    background: #E6E7E9;
+    border-color: #979797;
+}
+
+QPushButton#backBtn,QPushButton#undoBtn,QPushButton#backToReportPageBtn,QPushButton#backToPreviousPageBtn{
+    background: transparent;
+    text-align : left;
+    color:#397EA6;
+}
+
+QDialogButtonBox::Save,QDialogButtonBox::Close{
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                 stop: 0 #F5F6F7, stop: 0.4 #F2F3F5,
+                                 stop: 0.5 #F2F3F5, stop: 1.0 #F5F6F7);
+    color:#333333;
+    border:none;
+    width: 68px;
+    height: 24px;
+}
+
+QPushButton::pressed{
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                 stop: 0 #BEE6FD, stop: 0.5 #BEE6FD,
+                                 stop: 1.0 #7EE6FD);
+    border-color: #11505C;
+    font-weight: bold;
+    font-family:"Microsoft YaHei";
+}
+
+QLabel#courseNameLbl,QLabel#chapterLbl,QLabel#commandLbl{
+    background: transparent;
+    color:#B5B5B5;
+    font-size:13px;
+    font-weight: normal;
+}
+QLabel#reportTitleLbl,QLabel#analyzeTitleLbl,QLabel#evaluateTitleLbl,QLabel#produceTitleLbl,QLabel#importTitleLbl,QLabel#designTitleLbl{
+    color:#B5B5B5;
+    font-size:16px;
+    font-weight: normal;
+}
+
+QLabel#displayInfoLbl,QLabel#importLbl,QLabel#analyzeLbl,QLabel#reportLbl,QLabel#autoDetectLbl{
+    color:#80ACC6;
+}
+
+QLabel#audioQLbl,QLabel#audioALbl,QLabel#audioAreaLbl,QLabel#qAreaLbl,QLabel#aAreaLbl{
+    color:#8A8A8A;
+}
+
+QLabel#reportHintLbl{
+    color:#B5B5B5;
+}
+
+QGroupBox#previewGB {
+    subcontrol-position: center;
+    padding: 1px;
+}
+
+QLabel#allPagesDoneLbl,QLabel#leve5CountLbl,QLabel#lastModifiedLbl,QLabel#newPagesDoneLbl, QLabel#lapsesLbl{
+    background:#F5F5F5;
+    padding-left:15px;
+    margin:1px;
+}
+
+QLabel#arrowLbl1{
+     color:#ABABAB;
+ }
+QLabel#courseHintLbl{
+    color:#80ACC6;
+    font-size:14px;
+ }
+
+ QGroupBox#learnStatsGB{
+    border-color: #979797;
+    /*border: 1px solid; 
+    border-color:#80ACC6;*/
+ }
+
+QWidget#browseTree{
+    font-size:16px;
+}
+
+QListWidget{
+    font-size:14px;
+    border:none;
+    border: 0px solid #ababab;
+}
+
+QLineEdit#chapterTitleLE{
+    border: 0px solid #999999;
+    border-radius: 6px;
+    background: #364C71;
+    color:#F2F3F5;
+}
+QLineEdit#questionTitleLE {
+    border: 0px solid #999999;
+    border-radius: 6px;
+    background: #E68E54;
+    color:#333333;
+}
+
+QLineEdit#courseNameLE {
+    border-top:none;
+    border-left:none;
+    border-right:none;
+    border-bottom: 1px solid #808080;
+    /* border-radius: 10px;
+    padding: 0 8px; 
+    background: #246EA7;*/
+}
+QComboBox {
+    border: 1px solid gray;
+    border-radius: 3px;
+    padding: 1px 2px 1px 2px; 
+}
+QComboBox::drop-down {
+  subcontrol-origin: padding;
+  subcontrol-position: top right;
+  width: 20px;
+  border-left-width: 1px;
+  border-left-color: darkgray;
+  border-left-style: solid; /* just a single line */
+  border-top-right-radius: 3px; /* same radius as the QComboBox */
+  border-bottom-right-radius: 3px;
+}
+
+QComboBox::down-arrow {
+  image: url(:/images/downArrow.png);
+}
+
+QComboBox QAbstractItemView {
+     border: 1px solid #32435E;
+     spacing:20px;
+     selection-background-color: #1162A0;	
+    background: #FFFFFF;
+ }

@@ -1,0 +1,51 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>images/add-black.png</file>
+    <file>images/add.png</file>
+    <file>images/analyze.png</file>
+    <file>images/angle.png</file>
+    <file>images/back.png</file>
+    <file>images/backDark.png</file>
+    <file>images/bottom.png</file>
+    <file>images/box.png</file>
+    <file>images/close.png</file>
+    <file>images/closeDark.png</file>
+    <file>images/course.png</file>
+    <file>images/delete.png</file>
+    <file>images/deleteLine.png</file>
+    <file>images/down.png</file>
+    <file>images/downArrow.png</file>
+    <file>images/edit.png</file>
+    <file>images/exit.png</file>
+    <file>images/exitDark.png</file>
+    <file>images/first.png</file>
+    <file>images/icon.png</file>
+    <file>images/import.png</file>
+    <file>images/last.png</file>
+    <file>images/leftArrow.png</file>
+    <file>images/logo.png</file>
+    <file>images/maximize.png</file>
+    <file>images/maximizeDark.png</file>
+    <file>images/minimize.png</file>
+    <file>images/minimizeDark.png</file>
+    <file>images/minus-black.png</file>
+    <file>images/newChap.png</file>
+    <file>images/newChapDark.png</file>
+    <file>images/newCourse.png</file>
+    <file>images/newCourseDark.png</file>
+    <file>images/next.png</file>
+    <file>images/numDown.png</file>
+    <file>images/numUp.png</file>
+    <file>images/ok.png</file>
+    <file>images/option.png</file>
+    <file>images/optionDark.png</file>
+    <file>images/optionHover.png</file>
+    <file>images/prev.png</file>
+    <file>images/previous.png</file>
+    <file>images/save-black.png</file>
+    <file>images/search.png</file>
+    <file>images/searching.png</file>
+    <file>images/top.png</file>
+    <file>images/up.png</file>
+</qresource>
+</RCC>

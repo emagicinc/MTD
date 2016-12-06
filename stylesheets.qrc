@@ -1,0 +1,11 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+<qresource>
+    <file>qss/emagic.central.qss</file>
+    <file>qss/emagic.top.qss</file>
+    <file>qss/emagic.left.qss</file>
+    <file>qss/emagic.main.qss</file>
+    <file>qss/emagic.settings.qss</file>
+    <file>qss/emagic.progress.qss</file>
+</qresource>
+</RCC>
