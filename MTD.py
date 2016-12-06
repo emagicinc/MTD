@@ -25,8 +25,6 @@ from util.common import copyTree, copyTemplate, initCourseList, readFile, stripp
     resetCombo, setItemId, getCourseList, getId, getExistingDir, deleteItemFile, getItemIdFromDb, \
     connectDb, closeDb, parseDbCourse, writeColDb, dbToQASection, saveEditData, warn, \
     getUserList, toList, getModelId, loadConf, resetModelCombo, getOnlineId
-# from project.preview import RenderItem
-# from project.produceDlg import ProduceDlg
 from util.keyMap import getKey
 from util import SMMessageBox
 import Preferences as Prefs
@@ -42,7 +40,7 @@ class MainWindow(QtGui.QMainWindow):
                                          QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowSystemMenuHint)
 
         self.ui = Ui_MainWindow()
-        #        self.setPostition()
+        self.setPostition()
         self.ui.setupUi(self)
         #        self.styleDict = {
         #            "系统":"windows",
@@ -54,42 +52,65 @@ class MainWindow(QtGui.QMainWindow):
         self.curFile = None
         self.setWindowIcon(QtGui.QIcon(':/images/icon.png'))
         self.progName = "MTD"
-        # TODO: 名称需要改为白色
         self.ver = "V 1.0.0"
-        self.setWindowTitle('''%s   %s''' % (self.progName, self.ver))
+        self.setWindowTitle("""%s   %s""" % (self.progName, self.ver))
 
         #######新参数#######
-        self.itemId = None  # 表示新增item
-        self.audioList = None
-        self.imageList = None
-        self.allItems = {}  # 将练习ID存入以章节ID为key的字典
-        self.curChap = None  # 用来储存当前章节Item
-        self.curChapId = Prefs.getCourse("curChap")  # 用来储存当前章节ID,为空时将页面添加到文档末
-        self.itemList = []  # 用来储存当前课程章节树中点击过的item
-        self.posList = []  # 第3列章节ID值,用于重载时判断是否选中
-        self.selItems = []  # 选中的页面列表,以Item的方式,这是准备用来删除或移动操作的
-        # 尝试启用新的参数
-        self.chapDict = None  # 储存章节的父ID信息,此ID并非页面ID,如果此值不为0,则表示不是顶层章节
-        self.chapIdDict = None  # 储存页面ID和章节ID的对应关系,用于课程列表编辑器
-        self.chapOrder = []  # 章节顺序,用于排列章节,以便输出时遵循
-        self.allItems = None  # 以ID为Key,id/name对列表为value的字典,用于展开,可看作练习id总表
-        self.childDict = None  # 以父章节为key,子章节列表为value的字典,主要用于校验chapDict
-        self.chapInfoDict = {}  # 150108新增,键为章节ID,值为Item,用于数据库模式章节初始化/课程制作模块章节初始化
-        self.chapElemDict = {}  # 150110新增,键为章节ID,值为courseList的elem,用于创建课程列表时定位父节点
-        # 原属configDlg的
-        self.guidDict = None  # guid字典[id] = guid
-        self.pathDict = None  # 路径字典[id] = path
+        # self.itemId = None  # 表示新增item
+        # self.audioList = None
+        # self.imageList = None
+        # self.allItems = {}  # 将练习ID存入以章节ID为key的字典
+        # self.curChap = None  # 用来储存当前章节Item
+        # self.curChapId = Prefs.getCourse("curChap")  # 用来储存当前章节ID,为空时将页面添加到文档末
+        # self.itemList = []  # 用来储存当前课程章节树中点击过的item
+        # self.posList = []  # 第3列章节ID值,用于重载时判断是否选中
+        # self.selItems = []  # 选中的页面列表,以Item的方式,这是准备用来删除或移动操作的
+        # # 尝试启用新的参数
+        # self.chapDict = None  # 储存章节的父ID信息,此ID并非页面ID,如果此值不为0,则表示不是顶层章节
+        # self.chapIdDict = None  # 储存页面ID和章节ID的对应关系,用于课程列表编辑器
+        # self.chapOrder = []  # 章节顺序,用于排列章节,以便输出时遵循
+        # self.allItems = None  # 以ID为Key,id/name对列表为value的字典,用于展开,可看作练习id总表
+        # self.childDict = None  # 以父章节为key,子章节列表为value的字典,主要用于校验chapDict
+        # self.chapInfoDict = {}  # 150108新增,键为章节ID,值为Item,用于数据库模式章节初始化/课程制作模块章节初始化
+        # self.chapElemDict = {}  # 150110新增,键为章节ID,值为courseList的elem,用于创建课程列表时定位父节点
+        # # 原属configDlg的
+        # self.guidDict = None  # guid字典[id] = guid
+        # self.pathDict = None  # 路径字典[id] = path
+        #
+        # self.method_name()
+        # self.confDict = {}  # 划词助手的模型参数
+        #
+        # self.cxn = None  # 数据库连接
+        # self.cur = None  # 数据库指针，cursor
+        # self.curDb = None  # 当前使用的DB类型,system, user，用来判断是否要重连数据库
+        # self.curCourseId = None
+        # self.today = QtCore.QDate.currentDate().toString("yyyy-MM-dd")  # 主要用于数据库LastRep数据
+        #
+        # '''信号，表示初始化完成，根据此信号初始化模式，连接数据库,置为None是为了防止初始化控件时执行refreshMode代码'''
+        # self.INITIALIZED = None
+        self.db = DB("./mtdo.db")  # 以下测试全部通过
+        self.se = self.db.se
+        # 获取当前任务ID:title的字典
+        self.curListId = "278927047"
+        self.curTaskId = None
+        self.curSubtaskId = None
+        self.curMenuSender = None # 右键菜单发起对象
+        self.hour = 0
+        self.min = 0
+        self.sec = 0
+        self.tasks = None
+        self.records = None
+        self.subtasks = None
+        self.lists = None
+        self.timer = QtCore.QTimer(self)  # 用来计时
+        self.timer.timeout.connect(self.showTime)  # 显示时间
 
-        self.ac = None  # 用于SuperMemo划词助手连接
-        self.confDict = {}  # 划词助手的模型参数
-
-        self.cxn = None  # 数据库连接
-        self.cur = None  # 数据库指针，cursor
-        self.curDb = None  # 当前使用的DB类型,system, user，用来判断是否要重连数据库
-        self.curCourseId = None
-        self.today = QtCore.QDate.currentDate().toString("yyyy-MM-dd")  # 主要用于数据库LastRep数据
-        '''信号，表示初始化完成，根据此信号初始化模式，连接数据库,置为None是为了防止初始化控件时执行refreshMode代码'''
-        self.INITIALIZED = None
+        self.ui.taskLW.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.ui.taskLW.customContextMenuRequested.connect(
+            self.taskMenuShow)
+        self.ui.listTaskLW.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.ui.listTaskLW.customContextMenuRequested.connect(
+            self.taskMenuShow)
 
         self.settingsStyle = self.loadStyleSheet(':/qss/emagic.settings.qss')  # TODO:临时修改
         self.topStyle = self.loadStyleSheet(':/qss/emagic.top.qss')
@@ -99,24 +120,27 @@ class MainWindow(QtGui.QMainWindow):
         self.centralStyle = self.loadStyleSheet(':/qss/emagic.central.qss')  # 主体部分
         self.ui.configWidget.setStyleSheet(self.settingsStyle)
         self.ui.topWidget.setStyleSheet(self.topStyle)
-        self.ui.leftWidget.setStyleSheet(self.leftStyle)
+        # self.ui.leftWidget.setStyleSheet(self.leftStyle)
         self.ui.mainWidget.setStyleSheet(self.mainStyle)
         self.ui.centralwidget.setStyleSheet(self.centralStyle)  # 这个级别最高，位于顶层
         self.moveable = False
 
         self.initialize()
 
+    def method_name(self):
+        self.ac = None  # 用于SuperMemo划词助手连接
+
     ################################################
-    ###            新代码开始                    ### 
+    ###                新代码开始                 ###
     ################################################  
     def setPostition(self):
-        '''设置窗口位置'''
+        """设置窗口位置"""
         desktop = QtGui.QApplication.desktop()
         rect = desktop.screenGeometry()
         self.move(rect.width() / 2 - 430, rect.height() / 4)
 
     def loadStyleSheet(self, qssFile):
-        '''载入样式表'''
+        """载入样式表"""
         file = QtCore.QFile(qssFile)
         file.open(QtCore.QFile.ReadOnly)
         styleSheet = file.readAll()
@@ -145,7 +169,7 @@ class MainWindow(QtGui.QMainWindow):
 
     @QtCore.pyqtSlot()
     def on_addListBtn_clicked(self):
-        '''添加清单'''
+        """添加清单"""
         # 先弹出一个命名窗口
         print('addlist')
 
@@ -166,25 +190,42 @@ class MainWindow(QtGui.QMainWindow):
 
     @QtCore.pyqtSlot()
     def on_manageListBtn_clicked(self):
-        '''添加清单'''
+        """添加清单"""
         print('manage')
         # 切到清单页
         # 双击进入清单
         # 对清单进行重命名
         # 可对清单进行转换(转成任务,子任务,注意考虑清单下已有任务的情况),转移(到另一个清单下)
 
+    @QtCore.pyqtSlot(str)
+    def on_searchLE_textChanged(self, key):
+        """搜索"""
+        hits = {}
+        index = self.ui.mainStk.currentIndex()
+        tasks = self.tasks
+        obj = self.ui.taskLW
+        if index == 4: # 列表页listPage
+            obj = self.ui.listTaskLW
+            tasks = self.db.dic(Task, self.curListId)
+        obj.clear()
+        for k, v in tasks.items():
+            if re.search(r'%s' % key, v):
+                hits[k] = v
+
+        for k, v in hits.items():
+            self.__setItem(k, v, obj)
+
     def initialize(self):
-        self.db = DB("./mtdo.db")  # 以下测试全部通过
-        self.se = self.db.se
+        # 初始化
+        # self.db = DB("./mtdo.db")  # 以下测试全部通过
+        # self.se = self.db.se
         # 获取当前任务ID:title的字典
-        self.curListId = "278927047"
-        self.curTaskId = None
-        self.curSubtaskId = None
-        self.hour = 0
-        self.min = 0
+        # self.curListId = "278927047"
+        # self.curTaskId = None
+        # self.curSubtaskId = None
+        # self.hour = 0
+        # self.min = 0
         self.ui.mainStk.setCurrentIndex(0)
-        self.timer = QtCore.QTimer(self)  # 用来计时
-        self.timer.timeout.connect(self.showTime)  # 显示时间
         #        print(self.tasks)
         self.tasks = self.db.dic(Task)
         self.records = self.db.dic(Record)
@@ -196,9 +237,7 @@ class MainWindow(QtGui.QMainWindow):
             self.__setItem(k, v, self.ui.listLW)
 
     def __setItem(self, id, title, obj):
-        '''根据item列表对ListWidget进行设置;'''
-        # TODO: 此方法暂未使用
-        # TODO:151102修改元件库DRAG区规则,itemList不再是单一值的列表,而是变成以元组为值的列表,其它地方要视情况逐渐转变过来!
+        """根据item列表对ListWidget进行设置;"""
         item = QtGui.QListWidgetItem(obj)
         item.setText(title)
         item.setData(32, id)  # 编号
@@ -227,7 +266,7 @@ class MainWindow(QtGui.QMainWindow):
         #        print(item.text(), item.data(32))
 
     def addTask(self, le, lw, name=None):
-        '''添加任务的公用方法'''
+        """添加任务的公用方法"""
         # le为LineEdit控件
         # lw为ListWidget控件
         title = name
@@ -258,7 +297,7 @@ class MainWindow(QtGui.QMainWindow):
 
     @QtCore.pyqtSlot()
     def on_addListTaskLE_returnPressed(self):
-        '''listPage下的添加任务'''
+        """listPage下的添加任务"""
         self.addTask(self.ui.addListTaskLE, self.ui.listTaskLW)
 
     @QtCore.pyqtSlot()
@@ -272,7 +311,7 @@ class MainWindow(QtGui.QMainWindow):
 
     @QtCore.pyqtSlot()
     def on_importBtn_clicked(self):
-        '''导入任务@指定清单'''
+        """导入任务@指定清单"""
         #        file = './import_test.txt'
         file = getOpenFileName('打开文件', None, 'file', self)
         df = pd.read_table(file)
@@ -282,12 +321,12 @@ class MainWindow(QtGui.QMainWindow):
 
     @QtCore.pyqtSlot()
     def on_addListTaskBtn_clicked(self):
-        '''新增任务@指定清单'''
+        """新增任务@指定清单"""
         self.on_addListTaskLE_returnPressed()
 
     @QtCore.pyqtSlot()
     def on_addTaskBtn_clicked(self):
-        '''新增任务'''
+        """新增任务"""
         self.on_addTaskLE_returnPressed()
 
     @QtCore.pyqtSlot(QtGui.QListWidgetItem)
@@ -305,7 +344,7 @@ class MainWindow(QtGui.QMainWindow):
         self.gotoTaskPage(item)
 
     def gotoTaskPage(self, item):
-        '''转到任务页面,公共方法'''
+        """转到任务页面,公共方法"""
         self.curTaskId = item.data(32)
         self.ui.mainStk.setCurrentIndex(1)
         self.ui.taskLbl.setText(item.text())
@@ -316,7 +355,6 @@ class MainWindow(QtGui.QMainWindow):
 
     @QtCore.pyqtSlot()
     def on_addSubtaskLE_returnPressed(self):
-        print("in")
         # TODO: 添加清单、任务、子任务
         # TODO:添加时setData
         # TODO:添加时更新数据库
@@ -338,7 +376,7 @@ class MainWindow(QtGui.QMainWindow):
 
     @QtCore.pyqtSlot()
     def on_addSubtaskBtn_clicked(self):
-        '''新增子任务'''
+        """新增子任务"""
         self.on_addSubtaskLE_returnPressed()
 
     #    @QtCore.pyqtSlot(QtGui.QListWidgetItem)
@@ -352,9 +390,10 @@ class MainWindow(QtGui.QMainWindow):
     #        self.curSubtaskId = item.data(32)
     #        self.ui.timerTitleLbl.setText(item.text())
     #        self.ui.lcdLN.display("00:00:00")
+
     @QtCore.pyqtSlot()
     def on_onManualBtn_clicked(self):
-        '''进入手动记录界面'''
+        """进入手动记录界面"""
         self.ui.mainStk.setCurrentIndex(3)
         title = self.tasks.get(self.curTaskId)
         self.ui.recordTitleLbl.setText(title)
@@ -367,7 +406,7 @@ class MainWindow(QtGui.QMainWindow):
 
     @QtCore.pyqtSlot()
     def on_timerBtn_clicked(self):
-        '''进入计时界面'''
+        """进入计时界面"""
         self.ui.mainStk.setCurrentIndex(2)
         #        self.curSubtaskId = item.data(32)
         title = self.tasks.get(self.curTaskId)
@@ -376,7 +415,7 @@ class MainWindow(QtGui.QMainWindow):
 
     @QtCore.pyqtSlot()
     def on_startBtn_clicked(self):
-        '''开始计时'''
+        """开始计时"""
         if self.ui.startBtn.text() in ['开始', '继续']:
             if self.ui.startBtn.text() == '开始':
                 self.hour = 0
@@ -392,14 +431,14 @@ class MainWindow(QtGui.QMainWindow):
 
     @QtCore.pyqtSlot()
     def on_rangeCB_toggled(self):
-        '''范围CB是否选中'''
+        """范围CB是否选中"""
         active = self.ui.rangeCB.isChecked()
         self.ui.maxCountSpin.setVisible(active)
         self.ui.slashLbl.setVisible(active)
 
     @QtCore.pyqtSlot()
     def on_stopBtn_clicked(self):
-        '''停止计时'''
+        """停止计时"""
         self.ui.startBtn.setText('开始')
         self.timer.stop()
         self.ui.mainStk.setCurrentIndex(3)
@@ -445,24 +484,52 @@ class MainWindow(QtGui.QMainWindow):
             minCount = self.ui.minCountSpin.value()
             maxCount = self.ui.maxCountSpin.value()
             workLoad = maxCount - minCount
-        record = Record(
-            onlineId=id,
-            title=text,
-            createdAt=date,
-            updatedAt=date,
-            parentId=self.curTaskId,
-            usageTime=usageTime,
-            workLoad=workLoad,
-            minCount=minCount,
-            maxCount=maxCount
-        )
-        self.se.add(record)
-        self.se.commit()
-        self.records[id] = text
+        if usageTime > 0:
+            record = Record(
+                onlineId=id,
+                title=text,
+                createdAt=date,
+                updatedAt=date,
+                parentId=self.curTaskId,
+                usageTime=usageTime,
+                workLoad=workLoad,
+                minCount=minCount,
+                maxCount=maxCount
+                )
+            self.se.add(record)
+            self.se.commit()
+            self.records[id] = text
+        self.gotoResultPage()
+
+    def gotoResultPage(self):
+        """
+        记录储存后转到结果页面
+        显示当天的学习记录
+        """
+        self.ui.mainStk.setCurrentIndex(5)
+        today = datetime.now().date() # 取日期部分
+        res = self.se.query(Record).filter(func.date(Record.updatedAt) == today)
+        for i in res:
+            infoLbl = QtGui.QLabel()
+            infoLbl.setText(
+                """%s\n时间：%s分"""
+                % (i.title, i.usageTime)
+                )
+            self.ui.resultLayout.addWidget(infoLbl)
+
+
+
+        # self.curTaskId = item.data(32)
+        # self.ui.mainStk.setCurrentIndex(1)
+        # self.ui.taskLbl.setText(item.text())
+        # subtasks = self.db.dic(Subtask, item.data(32))
+        # self.ui.subtaskLW.clear()
+        # for k, v in subtasks.items():
+        #     self.__setItem(k, v, self.ui.subtaskLW)
 
     @QtCore.pyqtSlot()
     def on_resetBtn_clicked(self):
-        '''重置计时'''
+        """重置计时"""
         self.ui.startBtn.setText('开始')
         self.timer.stop()
         self.hour = 0
@@ -470,9 +537,8 @@ class MainWindow(QtGui.QMainWindow):
         self.sec = 0
 
     def showTime(self):
-        #        time = QtCore.QTime.currentTime()
         def cv(s):
-            '''在数字前补0,并转成字符'''
+            """在数字前补0,并转成字符"""
             s = """0%s""" % s
             return s[-2:]
 
@@ -483,51 +549,35 @@ class MainWindow(QtGui.QMainWindow):
         if self.min == 60:
             self.hour += 1
             self.min = 0
-        #        text = time.toString('hh:mm:ss')
-        #        if (self.sec % 2) == 0: #每秒更新一次
-        #            text = text[:2] + ' ' + text[3:]
-        #        curTime = QtCore.QTime.setHMS(self.hour, self.min, self.sec)
         text = """%s:%s:%s""" % (cv(self.hour), cv(self.min), cv(self.sec))
-        #        text = QtCore.QTime.toString(curTime, "hh:mm:ss")
-
         self.ui.lcdLN.display(text)
 
+    #创建右键菜单
+    def taskMenuShow(self):
+        """显示右键菜单"""
+        self.curMenuSender = self.sender()
+        menu = QtGui.QMenu(self.curMenuSender)
+        for k, v in self.lists.items():
+            act = QtGui.QAction(v, self, triggered=self.transferTask)
+            act.setData(k)
+            menu.addAction(act)
+        menu.exec_(QtGui.QCursor.pos())
 
-        # 加上判断：if txt in self.tasks.values()
-        # 要加一个生成onlineId的方法
-
-    #    onlineId = Column(Integer)
-    #    title = Column(String)
-    #    createdAt = Column(Text)
-    #    updatedAt = Column(Text)
-    #    parentId = Column(Text)
-    #    dueDate = Column(Text)
-    #    starred = Column(Boolean)
-    #    completed = Column(Boolean)
-    #    completedAt = Column(Text)
-    #    usageTime = Column(Time)
-    #    workLoad = Column(Float)
-    #    lastPos = Column(Integer)
-    #    unit = Column(Integer)
-
-    #    def setItem(self, itemList, widget):
-    #        '''根据item列表对ListWidget进行设置;'''
-    #        if len(itemList) < 1:
-    #            return
-    #        for i in itemList:
-    #            item = QtGui.QListWidgetItem(widget)
-    #            if isinstance(i, str):
-    #                item.setText(i)
-    #            else:
-    #                item.setText("""[%s]%s""" % (i[1], i[0]))
-    #                item.setData(32, i[1]) #编号
-    #                item.setData(3, i[1]) #显示类型（设置为toolTipRole）
-    #                item.setData(11, i[1]) #显示类型（设置为toolTipRole）
-    #
-    #            widget.addItem(item)
+    def transferTask(self):
+        """将任务转移到另一个清单"""
+        obj = self.sender()
+        parentId = obj.data()
+        item = self.curMenuSender.currentItem()
+        id = item.data(32)
+        pid = self.db.getParentId(Task, id)
+        if parentId != pid:
+            self.db.updateParentId(Task, id, parentId)
+            if self.ui.mainStk.currentIndex() != 0:
+                row = self.curMenuSender.currentRow()
+                self.curMenuSender.takeItem(row)
 
     def getTime(self, start):
-        '''获取时间差'''
+        """获取时间差"""
         now = time.time()
         interval = int((now - start) / 60)
         sec = int((now - start - interval * 60))
@@ -535,25 +585,25 @@ class MainWindow(QtGui.QMainWindow):
 
     @QtCore.pyqtSlot()
     def on_closeBtn_clicked(self):
-        '''退出'''
+        """退出"""
         self.quit()
 
     @QtCore.pyqtSlot()
     def on_exitBtn_clicked(self):
-        '''退出'''
+        """退出"""
         self.quit()
 
     @QtCore.pyqtSlot()
     def on_minimizeBtn_clicked(self):
-        '''最小化@顶部'''
+        """最小化@顶部"""
         self.showMinimized()
 
     def quit(self):
-        '''退出'''
+        """退出"""
         self.close()
 
     def closeEvent(self, event):
-        '''响应关闭事件,注意,这里实际上是被self.quit调用'''
+        """响应关闭事件,注意,这里实际上是被self.quit调用"""
         sys.exit()
 
     def eventFilter(self, watched, event):
@@ -572,7 +622,7 @@ class MainWindow(QtGui.QMainWindow):
         return False
 
     def mousePressEvent(self, event):
-        '''实现标题栏拖动：1'''
+        """实现标题栏拖动：1"""
         if event.buttons() == QtCore.Qt.LeftButton:
             self.dragPosition = event.globalPos() - self.frameGeometry().topLeft()
             rect = self.ui.topWidget.rect()
@@ -581,24 +631,24 @@ class MainWindow(QtGui.QMainWindow):
         event.accept()
 
     def mouseMoveEvent(self, event):
-        '''实现标题栏拖动：2'''
+        """实现标题栏拖动：2"""
         if event.buttons() == QtCore.Qt.LeftButton and self.moveable:
             self.move(event.globalPos() - self.dragPosition)
         event.accept()
 
     def mouseReleaseEvent(self, event):
-        '''实现标题栏拖动：3'''
+        """实现标题栏拖动：3"""
         if self.moveable:
             self.moveable = False
 
         #    def catureQustion(self):
-        #        '''响应全局快捷键'''
+        #        """响应全局快捷键"""
         ##        from project.collectorDlg import CollectorDlg
         #        dlg = CollectorDlg(self)
         #        dlg.exec_()
 
     def writeNotes(self, pr):
-        '''响应来自collectorWgtOK按钮点击'''
+        """响应来自collectorWgtOK按钮点击"""
         file = './knowledge.txt'
         qtxt = pr.ui.questionLE.text()
         atxt = pr.ui.answerLE.text()
@@ -628,7 +678,7 @@ class GlobalHotKeyApp(QtGui.QApplication):
         self.RegisterHotKey = prototype(('RegisterHotKey', windll.user32), paramflags)
 
     def register(self):
-        '''热键注册'''
+        """热键注册"""
         # 检查有无设置数据库
         #        db = Prefs.getCourse("db")
         #        if not QtCore.QFile.exists(db):
