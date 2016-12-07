@@ -957,7 +957,7 @@
            </sizepolicy>
           </property>
           <property name="currentIndex">
-           <number>4</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="homePage">
            <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1032,7 +1032,7 @@
            </layout>
           </widget>
           <widget class="QWidget" name="taskPage">
-           <layout class="QVBoxLayout" name="verticalLayout_5">
+           <layout class="QVBoxLayout" name="verticalLayout_2">
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_16">
               <item>
@@ -1169,6 +1169,9 @@
                </size>
               </property>
              </widget>
+            </item>
+            <item>
+             <widget class="QTextEdit" name="noteTE"/>
             </item>
             <item>
              <spacer name="verticalSpacer_2">
