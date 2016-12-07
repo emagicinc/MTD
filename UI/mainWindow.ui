@@ -957,7 +957,7 @@
            </sizepolicy>
           </property>
           <property name="currentIndex">
-           <number>5</number>
+           <number>4</number>
           </property>
           <widget class="QWidget" name="homePage">
            <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1590,6 +1590,33 @@
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_19">
               <item>
+               <widget class="QLabel" name="label_11">
+                <property name="text">
+                 <string>单位</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="unitCombo">
+                <property name="editable">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="unitBtn">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>29</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>更新</string>
+                </property>
+               </widget>
+              </item>
+              <item>
                <spacer name="horizontalSpacer_4">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -1601,6 +1628,19 @@
                  </size>
                 </property>
                </spacer>
+              </item>
+              <item>
+               <widget class="QPushButton" name="randomBtn">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>29</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>随机</string>
+                </property>
+               </widget>
               </item>
               <item>
                <widget class="QPushButton" name="importBtn">

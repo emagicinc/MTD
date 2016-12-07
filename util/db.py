@@ -116,6 +116,17 @@ class DB(object):
         self.se.query(base).filter(base.onlineId == onlineId).update({"parentId": parentId})
         self.se.commit()
 
+    def getUnitId(self, base, onlineId):
+        """返回 unitId"""
+        query = self.se.query(base.unitId).filter(base.onlineId == onlineId)
+        res = query.scalar()
+        return res
+
+    def updateUnitId(self, base, onlineId, unitId):
+        """更新unitId"""
+        self.se.query(base).filter(base.onlineId == onlineId).update({"unitId": unitId})
+        self.se.commit()
+
     def all(self, *a, **kw):
         return self.execute(*a, **kw).fetchall()
 
@@ -150,17 +161,25 @@ class DB(object):
         
     def dic(self, base, parentId=None):
         """返回字典，k,v = onlineId,title"""
-#        s = select([base.onlineId, base.title])
         query = self.se.query(base).order_by(base.id)
-#        s = select([tasks.c.title, tasks.c.onlineId], tasks.c.title != '云手') 
         if parentId:
             query = query.filter(base.parentId == parentId)
-#            s = select([base.onlineId, base.title], base.parentId==parentId)        
         res = query.all()
         d = {}
         for i in res:
             d[i.onlineId] = i.title
         return d
+
+# def dic(base, parentId=None):
+#     """返回字典，k,v = onlineId,title"""
+#     query = self.se.query(base).order_by(base.id)
+#     if parentId:
+#         query = query.filter(base.parentId == parentId)
+#     res = query.all()
+#     d = {}
+#     for i in res:
+#         d[i.onlineId] = i.title
+#     return d
 
 #def dic(base, parentId=None):
 #    query = se.query(base).order_by(base.id)

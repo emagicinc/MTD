@@ -287,7 +287,7 @@ def getExistingDir(title, object, type, parent):
             
 def resetCombo(combo, items, isMulti=None, indexItem=None, dataType=None):
     """
-    以传入的items(列表)重置组合框值;
+    以传入的items(列表或字典)重置组合框值;
     indexItem为str;
     isMulti 若为True,则为多元列表,如模型设置中的题型列表;
     dataType若为int,则为直接设置索引值;若为findData,则使用findData,否则用findText;
@@ -297,17 +297,19 @@ def resetCombo(combo, items, isMulti=None, indexItem=None, dataType=None):
         if not isMulti:
             for i in items:
                 combo.addItem(i)
-        else:#二元列表
-            for i in items:
-                combo.addItem(i[0], i[1]) 
+        else:  # 二元列表或字典
+            if isinstance(items, dict):
+                for k, v in items.items():
+                    combo.addItem(v, k)
+            else:
+                for i in items:
+                    combo.addItem(i[0], i[1])
         if indexItem:
             try:
                 if dataType == "int":
                     index = int(indexItem)
                 elif dataType == "findData":
-#                        print("in")
                     index = combo.findData(indexItem)
-#                        print(index)
                 elif dataType == "findText":
                     index = combo.findText(indexItem)
                 if index:

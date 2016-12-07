@@ -94,14 +94,15 @@ class MainWindow(QtGui.QMainWindow):
         self.curListId = "278927047"
         self.curTaskId = None
         self.curSubtaskId = None
-        self.curMenuSender = None # 右键菜单发起对象
+        self.curMenuSender = None  # 右键菜单发起对象
         self.hour = 0
         self.min = 0
         self.sec = 0
-        self.tasks = None
-        self.records = None
-        self.subtasks = None
-        self.lists = None
+        self.lists = None  # 所有清单
+        self.tasks = None  # 所有任务
+        self.records = None  # 所有记录
+        self.subtasks = None  # 所有子任务
+        self.units = None  # 所有单位
         self.timer = QtCore.QTimer(self)  # 用来计时
         self.timer.timeout.connect(self.showTime)  # 显示时间
 
@@ -204,7 +205,7 @@ class MainWindow(QtGui.QMainWindow):
         index = self.ui.mainStk.currentIndex()
         tasks = self.tasks
         obj = self.ui.taskLW
-        if index == 4: # 列表页listPage
+        if index == 4: # 列表页taskPage
             obj = self.ui.listTaskLW
             tasks = self.db.dic(Task, self.curListId)
         obj.clear()
@@ -231,6 +232,8 @@ class MainWindow(QtGui.QMainWindow):
         self.records = self.db.dic(Record)
         self.subtasks = self.db.dic(Subtask)
         self.lists = self.db.dic(List)
+        self.units = self.db.dic(Unit)
+
         for k, v in self.tasks.items():
             self.__setItem(k, v, self.ui.taskLW)
         for k, v in self.lists.items():
@@ -256,11 +259,13 @@ class MainWindow(QtGui.QMainWindow):
         """
         listLW中item单击;
         """
-        # 转到专用的页面
+        # 转到taskPage的页面
         self.ui.mainStk.setCurrentIndex(4)
         self.curListId = item.data(32)
         tasks = self.db.dic(Task, item.data(32))
         self.ui.listTaskLW.clear()
+        unitId = self.db.getUnitId(List, self.curListId)
+        resetCombo(self.ui.unitCombo, self.units, True, unitId, 'findData')
         for k, v in tasks.items():
             self.__setItem(k, v, self.ui.listTaskLW)
         #        print(item.text(), item.data(32))
@@ -272,8 +277,6 @@ class MainWindow(QtGui.QMainWindow):
         title = name
         if not name:
             title = le.text()
-        # TODO: 最好做一个重名检查
-        # TODO: 增加任务移动功能
         if title not in self.tasks.values():
             item = QtGui.QListWidgetItem(lw)
             # TODO: id应做成一个通用的方法
@@ -297,16 +300,12 @@ class MainWindow(QtGui.QMainWindow):
 
     @QtCore.pyqtSlot()
     def on_addListTaskLE_returnPressed(self):
-        """listPage下的添加任务"""
+        """taskPage下的添加任务"""
         self.addTask(self.ui.addListTaskLE, self.ui.listTaskLW)
 
     @QtCore.pyqtSlot()
     def on_addTaskLE_returnPressed(self):
         print("in")
-        # TODO: 添加清单、任务、子任务
-        # TODO:添加时setData
-        # TODO:添加时更新数据库
-        # TODO:读取数据库指定的任务和清单的控件
         self.addTask(self.ui.addTaskLE, self.ui.taskLW)
 
     @QtCore.pyqtSlot()
@@ -318,6 +317,37 @@ class MainWindow(QtGui.QMainWindow):
         for i in df.values:
             self.addTask(self.ui.addListTaskLE, self.ui.listTaskLW, i[0])
         self.se.commit()
+
+    @QtCore.pyqtSlot()
+    def on_unitBtn_clicked(self):
+        """更新单位@指定清单"""
+        title = self.ui.unitCombo.currentText()
+        unitId = self.ui.unitCombo.itemData(
+           self.ui.unitCombo.currentIndex()
+           )
+        if title not in self.units.values():
+            while True:
+                unitId = """14%s""" % getOnlineId()
+                if unitId not in self.units.keys():
+                    break
+            unit = Unit(
+                onlineId=unitId,
+                title=title,
+            )
+            self.se.add(unit)
+            self.se.commit()
+
+        self.db.updateUnitId(List, self.curListId, unitId)  # 将id作为当前清单的unitId
+        self.units[unitId] = title
+        resetCombo(self.ui.unitCombo, self.units, True, unitId, 'findData')
+
+    @QtCore.pyqtSlot()
+    def on_randomBtn_clicked(self):
+        """随机挑选任务@指定清单"""
+        # todo, 后期要根据星级、标签、日期匹配（周几）来进行随机选择（制定随机模式）
+        tasks = self.db.dic(Task, self.curListId)
+        taskId = random.choice(list(tasks.keys()))
+        self.__gotoTaskPage(taskId, self.tasks.get(taskId))
 
     @QtCore.pyqtSlot()
     def on_addListTaskBtn_clicked(self):
@@ -345,20 +375,21 @@ class MainWindow(QtGui.QMainWindow):
 
     def gotoTaskPage(self, item):
         """转到任务页面,公共方法"""
-        self.curTaskId = item.data(32)
+        self.__gotoTaskPage(item.text(), item.data(32))
+
+    def __gotoTaskPage(self, taskId, title):
+        """转到任务页面"""
+        self.curTaskId = taskId
         self.ui.mainStk.setCurrentIndex(1)
-        self.ui.taskLbl.setText(item.text())
-        subtasks = self.db.dic(Subtask, item.data(32))
+        self.ui.taskLbl.setText(title)
+        subtasks = self.db.dic(Subtask, taskId)
         self.ui.subtaskLW.clear()
         for k, v in subtasks.items():
             self.__setItem(k, v, self.ui.subtaskLW)
 
     @QtCore.pyqtSlot()
     def on_addSubtaskLE_returnPressed(self):
-        # TODO: 添加清单、任务、子任务
-        # TODO:添加时setData
-        # TODO:添加时更新数据库
-        # TODO:读取数据库指定的任务和清单的控件
+        # TODO: 添加清单
         title = self.ui.addSubtaskLE.text()
         # TODO: 最好做一个重名检查
         item = QtGui.QListWidgetItem(self.ui.subtaskLW)
@@ -369,7 +400,7 @@ class MainWindow(QtGui.QMainWindow):
                 break
         item.setText(title)
         item.setData(32, id)
-        subtask = Subask(onlineId=id, title=title, parentId=self.curTaskId)
+        subtask = Subtask(onlineId=id, title=title, parentId=self.curTaskId)
         self.se.add(subtask)
         self.se.commit()
         self.subtasks[id] = title  # 更新self.tasks
@@ -437,6 +468,31 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.slashLbl.setVisible(active)
 
     @QtCore.pyqtSlot()
+    def on_resetBtn_clicked(self):
+        """重置计时"""
+        self.ui.startBtn.setText('开始')
+        self.timer.stop()
+        self.hour = 0
+        self.min = 0
+        self.sec = 0
+
+    def showTime(self):
+        def cv(s):
+            """在数字前补0,并转成字符"""
+            s = """0%s""" % s
+            return s[-2:]
+
+        self.sec += 1
+        if self.sec == 60:
+            self.min += 1
+            self.sec = 0
+        if self.min == 60:
+            self.hour += 1
+            self.min = 0
+        text = """%s:%s:%s""" % (cv(self.hour), cv(self.min), cv(self.sec))
+        self.ui.lcdLN.display(text)
+
+    @QtCore.pyqtSlot()
     def on_stopBtn_clicked(self):
         """停止计时"""
         self.ui.startBtn.setText('开始')
@@ -453,15 +509,11 @@ class MainWindow(QtGui.QMainWindow):
 
     @QtCore.pyqtSlot()
     def on_saveBtn_clicked(self):
-        # 储存
+        """储存记录"""
         # 注意,如果从任务一级就开始记录,就必须指定是储存任务还是子任务
-        # 注意,还是应该做成一个记录表来储存.
-        # 这样也便于统计
-
         # TODO: 要可以修改记录
-        # TODO: 点击后转到记录汇总页面
-        # TODO: listPage内增加一个随机挑选任务的按钮
-        # TODO: listPage内增加按星级/标签/常用等方式筛选,任务表要添加星级字段
+        # TODO: taskPage内增加一个随机挑选任务的按钮
+        # TODO: taskPage内增加按星级/标签/常用等方式筛选,任务表要添加星级字段
         # TODO: 增加weekPlan表,用来随机挑选任务用,任务界面增加星期选项
         # TODO: 可以增加40-50秒以上算作一分钟的设置
         # 不足一分钟提示
@@ -511,12 +563,22 @@ class MainWindow(QtGui.QMainWindow):
         res = self.se.query(Record).filter(func.date(Record.updatedAt) == today)
         for i in res:
             infoLbl = QtGui.QLabel()
+            workLoad = self.getWordLoad(i.workLoad, i.minCount, i.maxCount)
             infoLbl.setText(
-                """%s\n时间：%s分"""
-                % (i.title, i.usageTime)
+                """%s\n时间：%s分%s"""
+                % (i.title, i.usageTime, workLoad)
                 )
             self.ui.resultLayout.addWidget(infoLbl)
 
+    def getWordLoad(self, workLoad, minCount=None, maxCount=None):
+        """根据传来的参数组成相应的字符串"""
+        content = ""
+        if workLoad > 0:
+            # todo, 注意要传入单位
+            content +=  """\n工作量：%s 页""" % workLoad
+        if minCount > 0:
+            content += """\n范围：%s - %s 页""" % (minCount, maxCount)
+        return content
 
 
         # self.curTaskId = item.data(32)
@@ -527,30 +589,6 @@ class MainWindow(QtGui.QMainWindow):
         # for k, v in subtasks.items():
         #     self.__setItem(k, v, self.ui.subtaskLW)
 
-    @QtCore.pyqtSlot()
-    def on_resetBtn_clicked(self):
-        """重置计时"""
-        self.ui.startBtn.setText('开始')
-        self.timer.stop()
-        self.hour = 0
-        self.min = 0
-        self.sec = 0
-
-    def showTime(self):
-        def cv(s):
-            """在数字前补0,并转成字符"""
-            s = """0%s""" % s
-            return s[-2:]
-
-        self.sec += 1
-        if self.sec == 60:
-            self.min += 1
-            self.sec = 0
-        if self.min == 60:
-            self.hour += 1
-            self.min = 0
-        text = """%s:%s:%s""" % (cv(self.hour), cv(self.min), cv(self.sec))
-        self.ui.lcdLN.display(text)
 
     #创建右键菜单
     def taskMenuShow(self):

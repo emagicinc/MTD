@@ -15,8 +15,8 @@ class Unit(Base):
     id = Column(Integer, primary_key=True)
     onlineId = Column(Text)
     title = Column(Text)
-    createdAt = Column(Text)
-    updatedAt = Column(Text)
+    createdAt = Column(DateTime, default=datetime.now)
+    updatedAt = Column(DateTime, default=datetime.now)
 
 class Category(Base):
     __tablename__ = 'Category'
@@ -31,6 +31,7 @@ class List(Base):
     id = Column(Integer, primary_key=True)
     onlineId = Column(Text)
     title = Column(Text)
+    unitId = Column(Text, ForeignKey('Unit.onlineId'))
     createdAt = Column(DateTime, default=datetime.now)
     updatedAt = Column(DateTime, default=datetime.now)
 
@@ -49,7 +50,7 @@ class Task(Base):
 #    usageTime = Column(Time)
 #    workLoad = Column(Float)
 #    lastPos = Column(Integer)
-    unitId = Column(Integer, ForeignKey('Unit.id'))
+    unitId = Column(Text, ForeignKey('Unit.onlineId'))
     categoryId = Column(Integer, ForeignKey('Category.id')) #分类, 相当于sp在书架外多一个学科分类
     
 class Subtask(Base):
