@@ -36,20 +36,27 @@ QPushButton::pressed{
 QPushButton#settingsBtn::hover{
   background: transparent;   
   border:none;   
-  image:url(:/images/option.png);
+  image:url(:/images/optionHover.png);
+}
+
+QPushButton#newCourseBtn::hover{
+  background: transparent;   
+  border:none;   
+  image:url(:/images/newCourseHover.png);
+}
+
+QPushButton#newChapBtn::hover{
+  background: transparent;   
+  border:none;   
+  image:url(:/images/newChapHover.png);
 }
 
 QPushButton#exitBtn::hover{
   background: transparent;   
   border:none;   
-  image:url(:/images/exit.png);
+  image:url(:/images/quitHover.png);
 }
 
-QPushButton#minimizeBtn::hover{
-  background: transparent;   
-  border:none;   
-  image:url(:/images/minimize.png);
-}
 /*
 QPushButton#maximizeBtn::hover{
   background: transparent;   
@@ -61,7 +68,7 @@ QPushButton#maximizeBtn::hover{
 QPushButton#closeBtn::hover{
   background: transparent;   
   border:none; 
-  image:url(:/images/close.png);
+  image:url(:/images/closeHover.png);
 }
 
 QPushButton#closeBtn{
@@ -76,10 +83,22 @@ QPushButton#maximizeBtn{
   image:url(:/images/maximizeDark.png);
 }
 
+QPushButton#maximizeBtn::hover{
+  background: transparent;   
+  border:none; 
+  image:url(:/images/maximizeDarkHover.png);
+}
+
 QPushButton#minimizeBtn{
   background: transparent;   
   border:none;   
   image:url(:/images/minimizeDark.png);
+}
+
+QPushButton#minimizeBtn::hover{
+  background: transparent;   
+  border:none; 
+  image:url(:/images/minimizeHover.png);
 }
 
 QLineEdit#searchLE {

@@ -30,9 +30,11 @@ from util import SMMessageBox
 import Preferences as Prefs
 from project.models import *
 from util.db import DB
+import PixmapCache
 
 WM_HOTKEY = 0x0312
 
+PixmapCache.addSearchPath(":/images")
 
 class MainWindow(QtGui.QMainWindow):
     def __init__(self, parent=None):
@@ -114,16 +116,18 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.listTaskLW.customContextMenuRequested.connect(
                 self.taskMenuShow)
 
-        self.settingsStyle = self.loadStyleSheet(':/qss/emagic.settings.qss')  # TODO:临时修改
-        self.topStyle = self.loadStyleSheet(':/qss/emagic.top.qss')
-        self.leftStyle = self.loadStyleSheet(':/qss/emagic.left.qss')
-        self.mainStyle = self.loadStyleSheet(':/qss/emagic.main.qss')
-        #        self.dlgStyle = self.loadStyleSheet(':/qss/emagic.dlg.qss')#各设置窗口 #TODO:临时修改,需要修改路径,重新编译
+        self.settingsStyle = self.loadStyleSheet('./qss/emagic.settings.qss')  # TODO:临时修改
+        self.topStyle = self.loadStyleSheet('./qss/emagic.top.qss')
+        self.leftStyle = self.loadStyleSheet('./qss/emagic.left.qss')
+        self.mainStyle = self.loadStyleSheet('./qss/emagic.main.qss')  #TODO:临时修改,需要修改路径,重新编译
+        self.stkStyle = self.loadStyleSheet('./qss/emagic.stk.qss')  #TODO:临时修改,需要修改路径,重新编译
+        #        self.dlgStyle = self.loadStyleSheet(':/qss/emagic.dlg.qss')#各设置窗口
         self.centralStyle = self.loadStyleSheet(':/qss/emagic.central.qss')  # 主体部分
         self.ui.configWidget.setStyleSheet(self.settingsStyle)
         self.ui.topWidget.setStyleSheet(self.topStyle)
-        # self.ui.leftWidget.setStyleSheet(self.leftStyle)
+        self.ui.leftWidget.setStyleSheet(self.leftStyle)
         self.ui.mainWidget.setStyleSheet(self.mainStyle)
+        self.ui.mainStk.setStyleSheet(self.stkStyle)
         self.ui.centralwidget.setStyleSheet(self.centralStyle)  # 这个级别最高，位于顶层
         self.moveable = False
 
@@ -212,6 +216,10 @@ class MainWindow(QtGui.QMainWindow):
         if index == 4:  # 列表页taskPage
             obj = self.ui.listTaskLW
             tasks = self.db.dic(Task, self.curListId)
+        else:
+            # 切换到首页
+            self.ui.mainStk.setCurrentIndex(0)
+            obj = self.ui.taskLW
         obj.clear()
         for k, v in tasks.items():
             if re.search(r'%s' % key, v):
@@ -243,11 +251,16 @@ class MainWindow(QtGui.QMainWindow):
         for k, v in self.lists.items():
             self.__setItem(k, v, self.ui.listLW)
 
-    def __setItem(self, id, title, obj):
+    def __setItem(self, itemId, title, obj):
         """根据item列表对ListWidget进行设置;"""
         item = QtGui.QListWidgetItem(obj)
         item.setText(title)
-        item.setData(32, id)  # 编号
+        item.setData(32, itemId)  # 编号
+        if obj.objectName() == "listLW":
+            listIcon = QtGui.QIcon(PixmapCache.getIcon('list.png'))
+            item.setIcon(listIcon)
+        else:
+            item.setCheckState(QtCore.Qt.Unchecked)
 
     #    @QtCore.pyqtSlot(QtGui.QListWidgetItem)
     #    def on_taskLW_itemClicked(self):
@@ -264,11 +277,15 @@ class MainWindow(QtGui.QMainWindow):
         listLW中item单击;
         """
         # 转到taskPage的页面
-        self.ui.mainStk.setCurrentIndex(4)
         self.curListId = item.data(32)
-        tasks = self.db.dic(Task, item.data(32))
+        self.gotoListPage()
+
+    def gotoListPage(self):
+        """转到清单页, 公用方法"""
+        self.ui.mainStk.setCurrentIndex(4)
+        tasks = self.db.dic(Task, self.curListId)
         self.ui.listTaskLW.clear()
-        unitId = self.db.getUnitId(List, self.curListId)
+        unitId = self.db.getData(List, self.curListId, List.unitId)
         resetCombo(self.ui.unitCombo, self.units, True, unitId, 'findData')
         for k, v in tasks.items():
             self.__setItem(k, v, self.ui.listTaskLW)
@@ -284,20 +301,20 @@ class MainWindow(QtGui.QMainWindow):
         if title not in self.tasks.values():
             item = QtGui.QListWidgetItem(lw)
             # TODO: id应做成一个通用的方法
-            id = None
+            taskId = None
             while True:
                 id = """23%s""" % getOnlineId()
                 if id not in self.tasks.keys():
                     break
             item.setText(title)
-            item.setData(32, id)
+            item.setData(32, taskId)
             task = Task(
-                    onlineId=id,
+                    onlineId=taskId,
                     title=title,
                     parentId=self.curListId,
-            )
+                    )
             self.se.add(task)
-            self.tasks[id] = title  # 更新self.tasks
+            self.tasks[taskId] = title  # 更新self.tasks
             if not name:  # 传入title的话,表示要批量处理
                 self.se.commit()
                 le.clear()
@@ -328,7 +345,7 @@ class MainWindow(QtGui.QMainWindow):
         title = self.ui.unitCombo.currentText()
         unitId = self.ui.unitCombo.itemData(
                 self.ui.unitCombo.currentIndex()
-        )
+                )
         if title not in self.units.values():
             while True:
                 unitId = """14%s""" % getOnlineId()
@@ -341,7 +358,7 @@ class MainWindow(QtGui.QMainWindow):
             self.se.add(unit)
             self.se.commit()
 
-        self.db.updateUnitId(List, self.curListId, unitId)  # 将id作为当前清单的unitId
+        self.db.update(List, self.curListId, 'unitId', unitId)  # 将id作为当前清单的unitId
         self.units[unitId] = title
         resetCombo(self.ui.unitCombo, self.units, True, unitId, 'findData')
 
@@ -351,7 +368,7 @@ class MainWindow(QtGui.QMainWindow):
         # todo, 后期要根据星级、标签、日期匹配（周几）来进行随机选择（制定随机模式）
         tasks = self.db.dic(Task, self.curListId)
         taskId = random.choice(list(tasks.keys()))
-        self.__gotoTaskPage(taskId, self.tasks.get(taskId))
+        self.__gotoTaskPage(self.tasks.get(taskId), taskId)
 
     @QtCore.pyqtSlot()
     def on_addListTaskBtn_clicked(self):
@@ -385,7 +402,7 @@ class MainWindow(QtGui.QMainWindow):
         """转到任务页面"""
         self.curTaskId = taskId
         self.ui.mainStk.setCurrentIndex(1)
-        self.ui.taskLbl.setText(title)
+        self.ui.taskLE.setText(title)
         note = self.db.getNote(Note, self.curTaskId)
         if note is not None:
             self.ui.noteTE.setText(note)
@@ -399,22 +416,28 @@ class MainWindow(QtGui.QMainWindow):
             self.__setItem(k, v, self.ui.subtaskLW)
 
     @QtCore.pyqtSlot()
+    def on_taskLE_edittingFinished(self):
+        """修改任务名称"""
+        title = self.ui.taskLE.text()
+        self.db.update(Task, self.curTaskId, 'title', title)
+
+    @QtCore.pyqtSlot()
     def on_addSubtaskLE_returnPressed(self):
         # TODO: 添加清单
         title = self.ui.addSubtaskLE.text()
         # TODO: 最好做一个重名检查
         item = QtGui.QListWidgetItem(self.ui.subtaskLW)
-        id = None
+        # subtaskId = None
         while True:
-            id = """13%s""" % getOnlineId()
-            if id not in self.subtasks.keys():
+            subtaskId = """13%s""" % getOnlineId()
+            if subtaskId not in self.subtasks.keys():
                 break
         item.setText(title)
-        item.setData(32, id)
-        subtask = Subtask(onlineId=id, title=title, parentId=self.curTaskId)
+        item.setData(32, subtaskId)
+        subtask = Subtask(onlineId=subtaskId, title=title, parentId=self.curTaskId)
         self.se.add(subtask)
         self.se.commit()
-        self.subtasks[id] = title  # 更新self.tasks
+        self.subtasks[subtaskId] = title  # 更新self.tasks
 
     @QtCore.pyqtSlot()
     def on_addSubtaskBtn_clicked(self):
@@ -439,8 +462,8 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.mainStk.setCurrentIndex(3)
         title = self.tasks.get(self.curTaskId)
         self.ui.recordTitleLbl.setText(title)
-        today = QtCore.QDate.currentDate()
-        self.ui.todayDE.setDate(today)
+        current = QtCore.QDateTime.currentDateTime()
+        self.ui.todayDE.setDateTime(current)
         self.ui.hourSpin.setValue(0)
         self.ui.minuteSpin.setValue(0)
         self.ui.minCountSpin.setValue(0)
@@ -511,8 +534,8 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.mainStk.setCurrentIndex(3)
         title = self.tasks.get(self.curTaskId)
         self.ui.recordTitleLbl.setText(title)
-        today = QtCore.QDate.currentDate()
-        self.ui.todayDE.setDate(today)
+        current = QtCore.QDateTime.currentDateTime()
+        self.ui.todayDE.setDateTime(current)
         self.ui.hourSpin.setValue(self.hour)
         self.ui.minuteSpin.setValue(self.min)
         # TODO: 要控制单位的显示
@@ -529,13 +552,15 @@ class MainWindow(QtGui.QMainWindow):
         # TODO: 可以增加40-50秒以上算作一分钟的设置
         # 不足一分钟提示
         text = self.ui.recordTitleLbl.text()
-        id = None
+        recordId = None
         while True:
-            id = """33%s""" % getOnlineId()
-            if id not in self.records.keys():
+            recordId = """33%s""" % getOnlineId()
+            if recordId not in self.records.keys():
                 break
                 #        today = datetime.now()
         # 计算时间
+        if self.sec >= 45:
+            self.min += 1
         usageTime = self.hour * 60 + self.min  # 记录分钟数
         # 计算工作量
         minCount = None
@@ -549,7 +574,7 @@ class MainWindow(QtGui.QMainWindow):
             workLoad = maxCount - minCount
         if usageTime > 0:
             record = Record(
-                    onlineId=id,
+                    onlineId=recordId,
                     title=text,
                     createdAt=date,
                     updatedAt=date,
@@ -561,7 +586,7 @@ class MainWindow(QtGui.QMainWindow):
             )
             self.se.add(record)
             self.se.commit()
-            self.records[id] = text
+            self.records[recordId] = text
         self.gotoResultPage()
 
     @QtCore.pyqtSlot()
@@ -577,18 +602,24 @@ class MainWindow(QtGui.QMainWindow):
         """
         self.ui.mainStk.setCurrentIndex(5)
         today = datetime.now().date()  # 取日期部分
+        for n in range(self.ui.resultLayout.count()):
+            item = self.ui.resultLayout.itemAt(n)
+            self.ui.resultLayout.removeItem(item)
         res = self.se.query(Record).filter(func.date(Record.updatedAt) == today)
+        totalUsage = 0
         for i in res:
             infoLbl = QtGui.QLabel()
-            workLoad = self.getWordLoad(i.workLoad, i.minCount, i.maxCount)
+            workLoad = self.getWorkLoad(i.workLoad, i.minCount, i.maxCount)
             infoLbl.setText(
                     """%s\n时间：%s分%s\n"""
                     """记录日期：%s"""
                     % (i.title, i.usageTime, workLoad, i.createdAt)
-            )
+                    )
+            totalUsage += i.usageTime
             self.ui.resultLayout.addWidget(infoLbl)
+        self.ui.usageTimeLbl.setText("""今日: %s分钟""" % str(totalUsage))
 
-    def getWordLoad(self, workLoad, minCount=None, maxCount=None):
+    def getWorkLoad(self, workLoad, minCount=None, maxCount=None):
         """根据传来的参数组成相应的字符串"""
         content = ""
         if workLoad > 0:
@@ -623,13 +654,15 @@ class MainWindow(QtGui.QMainWindow):
         obj = self.sender()
         parentId = obj.data()
         item = self.curMenuSender.currentItem()
-        id = item.data(32)
-        pid = self.db.getParentId(Task, id)
+        taskId = item.data(32)
+        pid = self.db.getData(Task, taskId, Task.parentId)
         if parentId != pid:
-            self.db.updateParentId(Task, id, parentId)
-            if self.ui.mainStk.currentIndex() != 0:
-                row = self.curMenuSender.currentRow()
-                self.curMenuSender.takeItem(row)
+            self.db.update(Task, taskId, 'parentId', parentId)
+            self.curListId = parentId  # 转到目标List下
+            self.gotoListPage()  # 跳转到清单页
+            # if self.ui.mainStk.currentIndex() != 0:  # 如果不在首页, 则做一个从移除操作
+            #     row = self.curMenuSender.currentRow()
+            #     self.curMenuSender.takeItem(row)
 
     def getTime(self, start):
         """获取时间差"""

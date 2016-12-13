@@ -105,11 +105,24 @@ QWidget#browseTree{
     font-size:16px;
 }
 
+/*
 QListWidget{
     font-size:14px;
     border:none;
+    padding-left: 11px;
     border: 0px solid #ababab;
 }
+
+QListWidget::item{
+    padding-left: 15px;
+    height: 31px;
+    color: #5C4C4C;
+}
+
+QListWidget::item:selected{
+    background: #E0EEFA;
+}
+*/
 
 QLineEdit#chapterTitleLE{
     border: 0px solid #999999;

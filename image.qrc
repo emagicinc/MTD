@@ -1,51 +1,80 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
-    <file>images/add-black.png</file>
+    <file>images/icon.png</file>
+    <file>images/logo.png</file>
+    <file>images/rect.png</file>
+    <file>images/transform.png</file>
+    <file>images/select.png</file>
+    <file>images/delete.png</file>
+    <file>images/refresh.png</file>
+    <file>images/stop.png</file>
+    <file>images/record.png</file>
+    <file>images/play.png</file>
+    <file>images/play-circle-o.png</file>
+    <file>images/play-circle.png</file>
+    <file>images/audio.png</file>
+    <file>images/box.png</file>
+    <file>images/choose.png</file>
+    <file>images/course.png</file>
+    <file>images/exit.png</file>
+    <file>images/folder.png</file>
+    <file>images/group.png</file>
+    <file>images/image.png</file>
+    <file>images/info-o.png</file>
+    <file>images/info.png</file>
+    <file>images/note.png</file>
+    <file>images/ok.png</file>
+    <file>images/open.png</file>
+    <file>images/openAux.png</file>
+    <file>images/paper.png</file>
+    <file>images/plus-square.png</file>
+    <file>images/question-square.png</file>
+    <file>images/question.png</file>
+    <file>images/record.png</file>
+    <file>images/save.png</file>
+    <file>images/tool.png</file>
+    <file>images/tools.png</file>
+    <file>images/truefalse.png</file>
+    <file>images/ungroup.png</file>
+    <file>images/delete.png</file>
+    <file>images/swap.png</file>
+    <file>images/down.png</file>
+    <file>images/up.png</file>
+    <file>images/copy.png</file>
     <file>images/add.png</file>
-    <file>images/analyze.png</file>
-    <file>images/angle.png</file>
+    <file>images/chap.png</file>
+    <file>images/edit.png</file>
+    <file>images/list.png</file>
+    <file>images/list-o.png</file>
+    <file>images/grabQ.png</file>
+    <file>images/grabA.png</file>
     <file>images/back.png</file>
     <file>images/backDark.png</file>
-    <file>images/bottom.png</file>
-    <file>images/box.png</file>
     <file>images/close.png</file>
     <file>images/closeDark.png</file>
-    <file>images/course.png</file>
-    <file>images/delete.png</file>
-    <file>images/deleteLine.png</file>
-    <file>images/down.png</file>
-    <file>images/downArrow.png</file>
-    <file>images/edit.png</file>
-    <file>images/exit.png</file>
-    <file>images/exitDark.png</file>
-    <file>images/first.png</file>
-    <file>images/icon.png</file>
-    <file>images/import.png</file>
-    <file>images/last.png</file>
-    <file>images/leftArrow.png</file>
-    <file>images/logo.png</file>
+    <file>images/closeHover.png</file>
+    <file>images/quit.png</file>
+    <file>images/quitDark.png</file>
+    <file>images/quitHover.png</file>
     <file>images/maximize.png</file>
     <file>images/maximizeDark.png</file>
+    <file>images/maximizeHover.png</file>
     <file>images/minimize.png</file>
     <file>images/minimizeDark.png</file>
-    <file>images/minus-black.png</file>
+    <file>images/minimizeHover.png</file>
     <file>images/newChap.png</file>
     <file>images/newChapDark.png</file>
+    <file>images/newChapHover.png</file>
     <file>images/newCourse.png</file>
     <file>images/newCourseDark.png</file>
-    <file>images/next.png</file>
-    <file>images/numDown.png</file>
-    <file>images/numUp.png</file>
-    <file>images/ok.png</file>
+    <file>images/newCourseHover.png</file>
     <file>images/option.png</file>
     <file>images/optionDark.png</file>
     <file>images/optionHover.png</file>
-    <file>images/prev.png</file>
-    <file>images/previous.png</file>
-    <file>images/save-black.png</file>
-    <file>images/search.png</file>
-    <file>images/searching.png</file>
-    <file>images/top.png</file>
-    <file>images/up.png</file>
+    <file>images/inbox.png</file>
+    <file>images/star.png</file>
+    <file>images/calendar.png</file>
+    <file>images/plus.png</file>
+    <file>images/task.png</file>
 </qresource>
 </RCC>

@@ -111,20 +111,15 @@ class DB(object):
         res = query.scalar()
         return res
 
-    def updateParentId(self, base, onlineId, parentId):
-        """更新parentId"""
-        self.se.query(base).filter(base.onlineId == onlineId).update({"parentId": parentId})
-        self.se.commit()
-
-    def getUnitId(self, base, onlineId):
-        """返回 unitId"""
-        query = self.se.query(base.unitId).filter(base.onlineId == onlineId)
+    def getData(self, base, onlineId, field):
+        """返回指定字段值"""
+        query = self.se.query(field).filter(base.onlineId == onlineId)
         res = query.scalar()
         return res
 
-    def updateUnitId(self, base, onlineId, unitId):
-        """更新unitId"""
-        self.se.query(base).filter(base.onlineId == onlineId).update({"unitId": unitId})
+    def update(self, base, onlineId, field, value):
+        """通用更新方法"""
+        self.se.query(base).filter(base.onlineId == onlineId).update({field: value})
         self.se.commit()
 
     def getNote(self, base, parentId):
