@@ -127,6 +127,12 @@ class DB(object):
         self.se.query(base).filter(base.onlineId == onlineId).update({"unitId": unitId})
         self.se.commit()
 
+    def getNote(self, base, parentId):
+        """根据parentId返回笔记内容"""
+        query = self.se.query(base.content).filter(base.parentId == parentId)
+        res = query.scalar()
+        return res
+
     def all(self, *a, **kw):
         return self.execute(*a, **kw).fetchall()
 

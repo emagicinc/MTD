@@ -103,15 +103,16 @@ class MainWindow(QtGui.QMainWindow):
         self.records = None  # 所有记录
         self.subtasks = None  # 所有子任务
         self.units = None  # 所有单位
+        self.wh = 31  # 测试用,控件高度
         self.timer = QtCore.QTimer(self)  # 用来计时
         self.timer.timeout.connect(self.showTime)  # 显示时间
 
         self.ui.taskLW.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.ui.taskLW.customContextMenuRequested.connect(
-            self.taskMenuShow)
+                self.taskMenuShow)
         self.ui.listTaskLW.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.ui.listTaskLW.customContextMenuRequested.connect(
-            self.taskMenuShow)
+                self.taskMenuShow)
 
         self.settingsStyle = self.loadStyleSheet(':/qss/emagic.settings.qss')  # TODO:临时修改
         self.topStyle = self.loadStyleSheet(':/qss/emagic.top.qss')
@@ -165,8 +166,11 @@ class MainWindow(QtGui.QMainWindow):
 
     @QtCore.pyqtSlot()
     def on_starListBtn_clicked(self):
-        query = self.se.query(List).filter(List.title != 'inbox')
-        res = query.all()
+        """星标清单"""
+        # query = self.se.query(List).filter(List.title != 'inbox')
+        # res = query.all()
+        self.ui.noteTE.setFixedHeight(self.wh)
+        self.wh += 31
 
     @QtCore.pyqtSlot()
     def on_addListBtn_clicked(self):
@@ -205,7 +209,7 @@ class MainWindow(QtGui.QMainWindow):
         index = self.ui.mainStk.currentIndex()
         tasks = self.tasks
         obj = self.ui.taskLW
-        if index == 4: # 列表页taskPage
+        if index == 4:  # 列表页taskPage
             obj = self.ui.listTaskLW
             tasks = self.db.dic(Task, self.curListId)
         obj.clear()
@@ -268,7 +272,7 @@ class MainWindow(QtGui.QMainWindow):
         resetCombo(self.ui.unitCombo, self.units, True, unitId, 'findData')
         for k, v in tasks.items():
             self.__setItem(k, v, self.ui.listTaskLW)
-        #        print(item.text(), item.data(32))
+            #        print(item.text(), item.data(32))
 
     def addTask(self, le, lw, name=None):
         """添加任务的公用方法"""
@@ -288,9 +292,9 @@ class MainWindow(QtGui.QMainWindow):
             item.setText(title)
             item.setData(32, id)
             task = Task(
-                onlineId=id,
-                title=title,
-                parentId=self.curListId,
+                    onlineId=id,
+                    title=title,
+                    parentId=self.curListId,
             )
             self.se.add(task)
             self.tasks[id] = title  # 更新self.tasks
@@ -323,16 +327,16 @@ class MainWindow(QtGui.QMainWindow):
         """更新单位@指定清单"""
         title = self.ui.unitCombo.currentText()
         unitId = self.ui.unitCombo.itemData(
-           self.ui.unitCombo.currentIndex()
-           )
+                self.ui.unitCombo.currentIndex()
+        )
         if title not in self.units.values():
             while True:
                 unitId = """14%s""" % getOnlineId()
                 if unitId not in self.units.keys():
                     break
             unit = Unit(
-                onlineId=unitId,
-                title=title,
+                    onlineId=unitId,
+                    title=title,
             )
             self.se.add(unit)
             self.se.commit()
@@ -377,11 +381,18 @@ class MainWindow(QtGui.QMainWindow):
         """转到任务页面,公共方法"""
         self.__gotoTaskPage(item.text(), item.data(32))
 
-    def __gotoTaskPage(self, taskId, title):
+    def __gotoTaskPage(self, title, taskId):
         """转到任务页面"""
         self.curTaskId = taskId
         self.ui.mainStk.setCurrentIndex(1)
         self.ui.taskLbl.setText(title)
+        note = self.db.getNote(Note, self.curTaskId)
+        if note is not None:
+            self.ui.noteTE.setText(note)
+            if len(note) < 25:
+                self.ui.noteTE.setFixedHeight(31)
+        else:
+            self.ui.noteTE.setFixedHeight(31)
         subtasks = self.db.dic(Subtask, taskId)
         self.ui.subtaskLW.clear()
         for k, v in subtasks.items():
@@ -458,7 +469,7 @@ class MainWindow(QtGui.QMainWindow):
         else:  # 暂停
             self.ui.startBtn.setText('继续')
             self.timer.stop()
-        #            self.showTime()
+            #            self.showTime()
 
     @QtCore.pyqtSlot()
     def on_rangeCB_toggled(self):
@@ -523,7 +534,7 @@ class MainWindow(QtGui.QMainWindow):
             id = """33%s""" % getOnlineId()
             if id not in self.records.keys():
                 break
-            #        today = datetime.now()
+                #        today = datetime.now()
         # 计算时间
         usageTime = self.hour * 60 + self.min  # 记录分钟数
         # 计算工作量
@@ -538,19 +549,25 @@ class MainWindow(QtGui.QMainWindow):
             workLoad = maxCount - minCount
         if usageTime > 0:
             record = Record(
-                onlineId=id,
-                title=text,
-                createdAt=date,
-                updatedAt=date,
-                parentId=self.curTaskId,
-                usageTime=usageTime,
-                workLoad=workLoad,
-                minCount=minCount,
-                maxCount=maxCount
-                )
+                    onlineId=id,
+                    title=text,
+                    createdAt=date,
+                    updatedAt=date,
+                    parentId=self.curTaskId,
+                    usageTime=usageTime,
+                    workLoad=workLoad,
+                    minCount=minCount,
+                    maxCount=maxCount
+            )
             self.se.add(record)
             self.se.commit()
             self.records[id] = text
+        self.gotoResultPage()
+
+    @QtCore.pyqtSlot()
+    def on_viewBtn_clicked(self):
+        """查看当天记录"""
+        # todo, 应该可以看本周记录/本月记录
         self.gotoResultPage()
 
     def gotoResultPage(self):
@@ -559,15 +576,16 @@ class MainWindow(QtGui.QMainWindow):
         显示当天的学习记录
         """
         self.ui.mainStk.setCurrentIndex(5)
-        today = datetime.now().date() # 取日期部分
+        today = datetime.now().date()  # 取日期部分
         res = self.se.query(Record).filter(func.date(Record.updatedAt) == today)
         for i in res:
             infoLbl = QtGui.QLabel()
             workLoad = self.getWordLoad(i.workLoad, i.minCount, i.maxCount)
             infoLbl.setText(
-                """%s\n时间：%s分%s"""
-                % (i.title, i.usageTime, workLoad)
-                )
+                    """%s\n时间：%s分%s\n"""
+                    """记录日期：%s"""
+                    % (i.title, i.usageTime, workLoad, i.createdAt)
+            )
             self.ui.resultLayout.addWidget(infoLbl)
 
     def getWordLoad(self, workLoad, minCount=None, maxCount=None):
@@ -575,8 +593,8 @@ class MainWindow(QtGui.QMainWindow):
         content = ""
         if workLoad > 0:
             # todo, 注意要传入单位
-            content +=  """\n工作量：%s 页""" % workLoad
-        if minCount > 0:
+            content += """\n工作量：%s 页""" % workLoad
+        if minCount is not None:
             content += """\n范围：%s - %s 页""" % (minCount, maxCount)
         return content
 
@@ -589,8 +607,7 @@ class MainWindow(QtGui.QMainWindow):
         # for k, v in subtasks.items():
         #     self.__setItem(k, v, self.ui.subtaskLW)
 
-
-    #创建右键菜单
+    # 创建右键菜单
     def taskMenuShow(self):
         """显示右键菜单"""
         self.curMenuSender = self.sender()
@@ -679,11 +696,11 @@ class MainWindow(QtGui.QMainWindow):
         if self.moveable:
             self.moveable = False
 
-        #    def catureQustion(self):
-        #        """响应全局快捷键"""
-        ##        from project.collectorDlg import CollectorDlg
-        #        dlg = CollectorDlg(self)
-        #        dlg.exec_()
+            #    def catureQustion(self):
+            #        """响应全局快捷键"""
+            ##        from project.collectorDlg import CollectorDlg
+            #        dlg = CollectorDlg(self)
+            #        dlg.exec_()
 
     def writeNotes(self, pr):
         """响应来自collectorWgtOK按钮点击"""
@@ -777,7 +794,7 @@ class GlobalHotKeyApp(QtGui.QApplication):
             #                self.grabImage(msg.wParam)
             if msg.wParam == 1:  # 全局抓Q
                 self.mw.catureQustion()
-            #            elif msg.wParam == 4: #全局抓A
+            # elif msg.wParam == 4: #全局抓A
             #                self.captureAnswer()
             else:
                 pass  # 后期可改为增加从其它软件取文本快捷键

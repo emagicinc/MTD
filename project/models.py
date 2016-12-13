@@ -1,11 +1,13 @@
-#from django.db import models
-#import datetime
+# from django.db import models
+# import datetime
 from datetime import datetime
-#from django.contrib.auth.models import User
-#from emagic.utils import todayStamp
-from sqlalchemy.ext.declarative import declarative_base #创建基类用
-from sqlalchemy import * #可用来将数据库映射过来
-Base = declarative_base() #基类
+# from django.contrib.auth.models import User
+# from emagic.utils import todayStamp
+from sqlalchemy.ext.declarative import declarative_base  # 创建基类用
+from sqlalchemy import *  # 可用来将数据库映射过来
+
+Base = declarative_base()  # 基类
+
 
 ###############################################
 ########         各类数据表        ############
@@ -18,6 +20,7 @@ class Unit(Base):
     createdAt = Column(DateTime, default=datetime.now)
     updatedAt = Column(DateTime, default=datetime.now)
 
+
 class Category(Base):
     __tablename__ = 'Category'
     id = Column(Integer, primary_key=True)
@@ -25,7 +28,8 @@ class Category(Base):
     title = Column(Text)
     createdAt = Column(Text)
     updatedAt = Column(Text)
-    
+
+
 class List(Base):
     __tablename__ = 'List'
     id = Column(Integer, primary_key=True)
@@ -34,6 +38,7 @@ class List(Base):
     unitId = Column(Text, ForeignKey('Unit.onlineId'))
     createdAt = Column(DateTime, default=datetime.now)
     updatedAt = Column(DateTime, default=datetime.now)
+
 
 class Task(Base):
     __tablename__ = 'Task'
@@ -46,13 +51,14 @@ class Task(Base):
     dueDate = Column(Text)
     starred = Column(Boolean)
     completed = Column(Boolean)
-    completedAt = Column(Text)    
-#    usageTime = Column(Time)
-#    workLoad = Column(Float)
-#    lastPos = Column(Integer)
+    completedAt = Column(Text)
+    #    usageTime = Column(Time)
+    #    workLoad = Column(Float)
+    #    lastPos = Column(Integer)
     unitId = Column(Text, ForeignKey('Unit.onlineId'))
-    categoryId = Column(Integer, ForeignKey('Category.id')) #分类, 相当于sp在书架外多一个学科分类
-    
+    categoryId = Column(Integer, ForeignKey('Category.id'))  # 分类, 相当于sp在书架外多一个学科分类
+
+
 class Subtask(Base):
     __tablename__ = 'Subtask'
     id = Column(Integer, primary_key=True)
@@ -60,14 +66,16 @@ class Subtask(Base):
     title = Column(String)
     createdAt = Column(DateTime, default=datetime.now)
     updatedAt = Column(DateTime, default=datetime.now)
-    parentId = Column(Text,ForeignKey('Task.onlineId'))
+    parentId = Column(Text, ForeignKey('Task.onlineId'))
     completed = Column(Boolean)
     completedAt = Column(Text)
-#    usageTime = Column(Time)
+
+
+# usageTime = Column(Time)
 #    workLoad = Column(Float)
 #    lastPos = Column(Integer)
 #    unit = Column(Integer)   
- 
+
 class Record(Base):
     __tablename__ = 'Record'
     id = Column(Integer, primary_key=True)
@@ -80,7 +88,9 @@ class Record(Base):
     workLoad = Column(Integer)
     minCount = Column(Integer)
     maxCount = Column(Integer)
-#    unit = Column(Integer, ForeignKey(Unit.id)) #单位由任务决定
+
+
+# unit = Column(Integer, ForeignKey(Unit.id)) #单位由任务决定
 
 class Note(Base):
     __tablename__ = 'Note'
@@ -91,7 +101,7 @@ class Note(Base):
     updatedAt = Column(Text)
     parentId = Column(Text)
 
-#class Province(models.Model):
+# class Province(models.Model):
 #    
 ##    id = models.IntegerField(primary_key=True)
 #    name = models.CharField(max_length=64, null=True) #省名
@@ -101,7 +111,7 @@ class Note(Base):
 #    def __str__(self):
 #        return self.name
 #        
-#class City(models.Model):
+# class City(models.Model):
 #    
 ##    id = models.IntegerField(primary_key=True)
 #    province = models.ForeignKey(Province, default=1, related_name="CITY_PROV") #省
@@ -113,7 +123,7 @@ class Note(Base):
 #    def __str__(self):
 #        return self.name
 #        
-#class County(models.Model):
+# class County(models.Model):
 #    
 ##    id = models.IntegerField(primary_key=True)
 #    province = models.ForeignKey(Province, default=1, related_name="COUNTY_PROV") #省
@@ -126,7 +136,7 @@ class Note(Base):
 #    def __str__(self):
 #        return self.name
 #
-#class District(models.Model):
+# class District(models.Model):
 #    '''代替原来的省市县,可实现三级联动'''
 #    #数字取自discuz x3,district表
 #    name = models.CharField(max_length=64, null=True) #区域名
@@ -141,7 +151,7 @@ class Note(Base):
 #    def __str__(self):
 #        return self.name
 #        
-#class School(models.Model):
+# class School(models.Model):
 #    
 ##    id = models.IntegerField(primary_key=True)
 #    name = models.CharField(max_length=64, null=True) #校名
@@ -155,7 +165,7 @@ class Note(Base):
 #    def __str__(self):
 #        return self.name
 #      
-#class Class(models.Model):
+# class Class(models.Model):
 #    
 ##    id = models.IntegerField(primary_key=True)
 #    name = models.CharField(max_length=64, null=True) #班级名
@@ -167,7 +177,7 @@ class Note(Base):
 #    def __str__(self):
 #        return self.name
 #
-#class Grade(models.Model):
+# class Grade(models.Model):
 #    '''年级仅用来区分课程,并不参与分班级'''
 ##    id = models.IntegerField(primary_key=True)
 #    name = models.CharField(max_length=64, null=True) #年级名/级别
@@ -179,7 +189,7 @@ class Note(Base):
 #    def __str__(self):
 #        return self.name
 #
-#class Subject(models.Model):
+# class Subject(models.Model):
 #    '''科目/学科'''
 ##    id = models.IntegerField(primary_key=True)
 #    name = models.CharField(max_length=64, null=True) #科目/分类名
@@ -255,7 +265,7 @@ class Note(Base):
 ##    def __str__(self):
 ##        return self.id
 #        
-#class Courses(models.Model):
+# class Courses(models.Model):
 #    '''课程表：记录课程列表'''
 ##    id = models.IntegerField(primary_key=True)
 #    guid = models.TextField(editable=True)
@@ -283,7 +293,7 @@ class Note(Base):
 #    def __str__(self):
 #        return self.title
 #        
-#class Items(models.Model):
+# class Items(models.Model):
 #    '''学习内容表：记录课程内容'''
 #    '''Notes表为公用'''
 ##    id = models.IntegerField(primary_key=True)
@@ -309,7 +319,7 @@ class Note(Base):
 #    def __str__(self):
 #        return self.name
 #
-#class Cards(models.Model):
+# class Cards(models.Model):
 #    '''卡片表，记录复习数据'''
 #    '''需增加用户字段，类似论坛的帖子，每一个页面的复习数据需要记录'''
 #    '''但同一课程下只更新固定页面的数据'''
@@ -344,7 +354,7 @@ class Note(Base):
 #    def __str__(self):
 #        return self.id
 #   
-#class Course_set(models.Model):
+# class Course_set(models.Model):
 #    '''课程设置:记录哪些用户学了哪些课程,具体的设置情况'''
 #    '''后期可考虑增加金额字段,可统计消费情况'''
 #    user = models.ForeignKey(User, related_name="SET_USER")
@@ -363,7 +373,7 @@ class Note(Base):
 #    tags = models.TextField(editable=True, default="[]")
 #
 ####用户档案
-#class UserProfile(models.Model):
+# class UserProfile(models.Model):
 #    # 这一句是必须的，链接UserProfile到Django的用户模型
 #    user = models.OneToOneField(User, related_name="PROFILE")
 ##    user = models.ForeignKey(User, unique=True)
@@ -398,13 +408,13 @@ class Note(Base):
 #    def __str__(self):
 #        return self.user.username
 ####测试或辅助用,用来存语音库的md5编码,可反向推测出以itemid命名的文件的词汇  
-#class AudioBank(models.Model):
+# class AudioBank(models.Model):
 #    md5 = models.CharField (max_length=25, default='', null=True)#md5
 #    data = models.CharField (max_length=25, default='', null=True)#放单词或路径
 #    type = models.IntegerField(default=1)#类型:1.美音;2.英音;3.朗文
 #    
 ####订单及订单内容
-#class Order(models.Model):
+# class Order(models.Model):
 #    user = models.ForeignKey(User, related_name="ORD_USER")
 #    order_sn = models.CharField (max_length=25, default='free', null=True)
 #    order_status = models.CharField (max_length=50, default='INIT', null=True)
@@ -417,13 +427,13 @@ class Note(Base):
 #    class Meta:
 #        verbose_name_plural = "订单管理"
 #        
-#class LineItem(models.Model):
+# class LineItem(models.Model):
 #    product = models.ForeignKey(Courses, related_name="LINE_CRS")
 #    order = models.ForeignKey(Order, related_name="LINE_ORD")
 #    unit_price = models.DecimalField(max_digits=8, decimal_places=2, default=0)
 #    quantity = models.IntegerField(default=1)
 #
-#def add_product(cart, product):
+# def add_product(cart, product):
 #    cart['total_price'] += float(product.price)
 #    cart['total_quantity'] += 1
 #    for item in cart['items']:
@@ -436,7 +446,7 @@ class Note(Base):
 #        }
 #        )
 #        
-#def minus_product(cart, product):
+# def minus_product(cart, product):
 #    cart['total_price'] -= float(product.price)
 #    cart['total_quantity'] -= 1
 #    for item in cart['items']:
@@ -447,7 +457,7 @@ class Note(Base):
 #                cart['items'].pop(index)
 #            return
 #
-#class Cart(object):
+# class Cart(object):
 #    def __init__(self, *args, **kwargs):
 #        self.items = []
 #        self.total_price = 0
@@ -460,5 +470,3 @@ class Note(Base):
 #                return
 #                
 #        self.items.append(LineItem(product=product,unit_price=product.price,quantity=1))
-
-
