@@ -76,5 +76,6 @@
     <file>images/calendar.png</file>
     <file>images/plus.png</file>
     <file>images/task.png</file>
+    <file>images/downArrow.png</file>
 </qresource>
 </RCC>
