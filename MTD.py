@@ -132,6 +132,7 @@ class MainWindow(QtGui.QMainWindow):
     @QtCore.pyqtSlot()
     def on_addListBtn_clicked(self):
         """添加清单"""
+        # todo, listLW增加右键菜单: 重命名, 复制, 删除, 添加成员
         dlg = NewListDlg(self)
         dlg.exec_()
 
