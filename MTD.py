@@ -112,18 +112,20 @@ class MainWindow(QtGui.QMainWindow):
 
     @QtCore.pyqtSlot()
     def on_inboxBtn_clicked(self):
-        for i in self.se.query(Subtask).order_by(Subtask.id):
-            print(i.title)
-        for i in self.se.query(Task).order_by(Task.id):
-            print(i.title)
-        for i in self.se.query(List).order_by(List.id):
-            print(i.title)
+        """收件箱"""
+        self.curListId = self.db.getData(List, List.onlineId, 'inbox', List.title)
+        tasks = self.db.dic(Task, self.curListId)
+        self.ui.mainStk.setCurrentIndex(4)
+        self.ui.listTaskLW.clear()
+        for k, v in tasks.items():
+            self.__setItem(k, v, self.ui.listTaskLW)
 
     @QtCore.pyqtSlot()
     def on_starListBtn_clicked(self):
         """星标清单"""
         # query = self.se.query(List).filter(List.title != 'inbox')
         # res = query.all()
+        # 测试用
         self.ui.noteTE.setFixedHeight(self.wh)
         self.wh += 31
 
@@ -188,7 +190,7 @@ class MainWindow(QtGui.QMainWindow):
         hits = {}
         index = self.ui.mainStk.currentIndex()
         tasks = self.tasks
-        obj = self.ui.taskLW
+        # obj = self.ui.taskLW
         if index == 4:  # 列表页taskPage
             obj = self.ui.listTaskLW
             tasks = self.db.dic(Task, self.curListId)
@@ -261,7 +263,7 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.mainStk.setCurrentIndex(4)
         tasks = self.db.dic(Task, self.curListId)
         self.ui.listTaskLW.clear()
-        unitId = self.db.getData(List, self.curListId, List.unitId)
+        unitId = self.db.getData(List, List.unitId, self.curListId)
         resetCombo(self.ui.unitCombo, self.units, True, unitId, 'findData')
         for k, v in tasks.items():
             self.__setItem(k, v, self.ui.listTaskLW)
@@ -618,7 +620,7 @@ class MainWindow(QtGui.QMainWindow):
         parentId = obj.data()
         item = self.curMenuSender.currentItem()
         taskId = item.data(32)
-        pid = self.db.getData(Task, taskId, Task.parentId)
+        pid = self.db.getData(Task, Task.parentId, taskId)
         if parentId != pid:
             self.db.update(Task, taskId, 'parentId', parentId)
             self.curListId = parentId  # 转到目标List下

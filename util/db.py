@@ -105,15 +105,17 @@ class DB(object):
         #     return res[0]
         # return None
 
-    def getParentId(self, base, onlineId):
-        """获取parentId"""
-        query = self.se.query(base.parentId).filter(base.onlineId == onlineId)
-        res = query.scalar()
-        return res
+    # def getParentId(self, base, onlineId):
+    #     """获取parentId"""
+    #     query = self.se.query(base.parentId).filter(base.onlineId == onlineId)
+    #     res = query.scalar()
+    #     return res
 
-    def getData(self, base, onlineId, field):
+    def getData(self, base, queryField, value, filterField=None):
         """返回指定字段值"""
-        query = self.se.query(field).filter(base.onlineId == onlineId)
+        if not filterField:
+            filterField = base.onlineId
+        query = self.se.query(queryField).filter(filterField == value)
         res = query.scalar()
         return res
 
