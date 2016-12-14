@@ -95,3 +95,16 @@ QSpacerItem{
 QFrame::Hline#horizontalLine1{
     color:white;/*not working*/
 }
+
+QLineEdit#searchLE {
+    border: 0px solid #CCCCCC;
+    /* border-top:none;
+    border-left:none;
+    border-right:none;*/
+    border-radius: 2px;
+    /* padding: 0 8px; 
+    */
+    background: #E9E9F1;
+    color: #4C4C4C;
+    
+}

@@ -977,7 +977,7 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="homePage">
            <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1071,6 +1071,9 @@
            <layout class="QVBoxLayout" name="verticalLayout_2">
             <item>
              <widget class="QScrollArea" name="taskSA">
+              <property name="autoFillBackground">
+               <bool>false</bool>
+              </property>
               <property name="verticalScrollBarPolicy">
                <enum>Qt::ScrollBarAlwaysOff</enum>
               </property>
@@ -1092,6 +1095,21 @@
                <layout class="QVBoxLayout" name="verticalLayout_5">
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_16">
+                  <property name="spacing">
+                   <number>9</number>
+                  </property>
+                  <property name="leftMargin">
+                   <number>3</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>5</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>3</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>5</number>
+                  </property>
                   <item>
                    <widget class="QLineEdit" name="taskLE">
                     <property name="minimumSize">
@@ -1125,7 +1143,7 @@
                    <widget class="QPushButton" name="viewBtn">
                     <property name="minimumSize">
                      <size>
-                      <width>0</width>
+                      <width>81</width>
                       <height>29</height>
                      </size>
                     </property>
@@ -1138,7 +1156,7 @@
                    <widget class="QPushButton" name="onManualBtn">
                     <property name="minimumSize">
                      <size>
-                      <width>0</width>
+                      <width>81</width>
                       <height>29</height>
                      </size>
                     </property>
@@ -1151,7 +1169,7 @@
                    <widget class="QPushButton" name="timerBtn">
                     <property name="minimumSize">
                      <size>
-                      <width>0</width>
+                      <width>81</width>
                       <height>29</height>
                      </size>
                     </property>
@@ -1177,28 +1195,6 @@
                    </spacer>
                   </item>
                  </layout>
-                </item>
-                <item>
-                 <widget class="QListWidget" name="subtaskLW">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="minimumSize">
-                   <size>
-                    <width>111</width>
-                    <height>29</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>11666</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
-                 </widget>
                 </item>
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_14">
@@ -1268,6 +1264,28 @@
                    </widget>
                   </item>
                  </layout>
+                </item>
+                <item>
+                 <widget class="QListWidget" name="subtaskLW">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>111</width>
+                    <height>29</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>11666</width>
+                    <height>48</height>
+                   </size>
+                  </property>
+                 </widget>
                 </item>
                 <item>
                  <widget class="QTextEdit" name="noteTE"/>
@@ -1550,13 +1568,13 @@
              <rect>
               <x>300</x>
               <y>390</y>
-              <width>75</width>
+              <width>81</width>
               <height>41</height>
              </rect>
             </property>
             <property name="minimumSize">
              <size>
-              <width>0</width>
+              <width>81</width>
               <height>41</height>
              </size>
             </property>
@@ -1614,6 +1632,15 @@
            <layout class="QVBoxLayout" name="verticalLayout_7">
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_20">
+              <property name="leftMargin">
+               <number>3</number>
+              </property>
+              <property name="topMargin">
+               <number>5</number>
+              </property>
+              <property name="rightMargin">
+               <number>3</number>
+              </property>
               <item>
                <widget class="QPushButton" name="addListTaskBtn">
                 <property name="minimumSize">
@@ -1699,6 +1726,21 @@
             </item>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_19">
+              <property name="spacing">
+               <number>8</number>
+              </property>
+              <property name="leftMargin">
+               <number>3</number>
+              </property>
+              <property name="topMargin">
+               <number>5</number>
+              </property>
+              <property name="rightMargin">
+               <number>3</number>
+              </property>
+              <property name="bottomMargin">
+               <number>5</number>
+              </property>
               <item>
                <widget class="QLabel" name="label_11">
                 <property name="text">
@@ -1717,7 +1759,7 @@
                <widget class="QPushButton" name="unitBtn">
                 <property name="minimumSize">
                  <size>
-                  <width>0</width>
+                  <width>81</width>
                   <height>29</height>
                  </size>
                 </property>
@@ -1743,7 +1785,7 @@
                <widget class="QPushButton" name="randomBtn">
                 <property name="minimumSize">
                  <size>
-                  <width>0</width>
+                  <width>81</width>
                   <height>29</height>
                  </size>
                 </property>
@@ -1756,7 +1798,7 @@
                <widget class="QPushButton" name="importBtn">
                 <property name="minimumSize">
                  <size>
-                  <width>0</width>
+                  <width>81</width>
                   <height>29</height>
                  </size>
                 </property>
@@ -1781,8 +1823,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>740</width>
-                 <height>641</height>
+                 <width>734</width>
+                 <height>587</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_8">

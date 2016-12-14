@@ -1,23 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-import sip
-
-sip.setapi('QVariant', 2)
-
+from project.models import *
+from project.newListDlg import NewListDlg
+from util.db import DB
 from PyQt4 import QtCore, QtGui, QtXml, QtNetwork, QtWebKit
-from PyQt4.QtWebKit import QWebSettings
-import codecs, zlib, struct, binascii, shutil, os, random, sqlite3, chardet, win32con, \
-    win32api, json, re, time
-from ctypes import c_bool, c_int, WINFUNCTYPE, windll, cdll, CDLL
-from ctypes.wintypes import UINT
-import win32com.client
-from datetime import datetime
-from PIL import Image
-from bs4 import BeautifulSoup
+import PixmapCache
 import pandas as pd
 from UI.Ui_mainWindow import Ui_MainWindow
-# from UI.Ui_dbPathDlg import Ui_DbPathDlg
 from util.common import copyTree, copyTemplate, initCourseList, readFile, strippedPath, correctCodec, getSelTxt, \
     outTxt, resultToId, getGuid, getFlds, date_uxStamp, execSql, makeImageList, makeAudioList, getMediaFile, \
     parseCourseList, getEmptyItem, writeCourseList, writeItemFile, writeDb, getOpenFileName, \
@@ -27,14 +16,22 @@ from util.common import copyTree, copyTemplate, initCourseList, readFile, stripp
     getUserList, toList, getModelId, loadConf, resetModelCombo, getOnlineId
 from util.keyMap import getKey
 from util import SMMessageBox
+from ctypes import c_bool, c_int, WINFUNCTYPE, windll, cdll, CDLL
+from ctypes.wintypes import UINT
 import Preferences as Prefs
-from project.models import *
-from util.db import DB
-import PixmapCache
+import codecs, zlib, struct, binascii, shutil, os, random, sqlite3, chardet, win32con, \
+    win32api, json, re, time
+import win32com.client
+from datetime import datetime
+from PIL import Image
+from bs4 import BeautifulSoup
+import sip
+sip.setapi('QVariant', 2)
 
 WM_HOTKEY = 0x0312
 
 PixmapCache.addSearchPath(":/images")
+PixmapCache.addSearchPath("./background")
 
 class MainWindow(QtGui.QMainWindow):
     def __init__(self, parent=None):
@@ -126,19 +123,17 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.configWidget.setStyleSheet(self.settingsStyle)
         self.ui.topWidget.setStyleSheet(self.topStyle)
         self.ui.leftWidget.setStyleSheet(self.leftStyle)
-        self.ui.mainWidget.setStyleSheet(self.mainStyle)
+        # self.ui.mainWidget.setStyleSheet(self.mainStyle)
         self.ui.mainStk.setStyleSheet(self.stkStyle)
         self.ui.centralwidget.setStyleSheet(self.centralStyle)  # 这个级别最高，位于顶层
         self.moveable = False
 
         self.initialize()
 
-    def method_name(self):
-        self.ac = None  # 用于SuperMemo划词助手连接
+    # ###############################################
+    # ##                新代码开始                 ###
+    # ###############################################
 
-    ################################################
-    ###                新代码开始                 ###
-    ################################################  
     def setPostition(self):
         """设置窗口位置"""
         desktop = QtGui.QApplication.desktop()
@@ -151,12 +146,7 @@ class MainWindow(QtGui.QMainWindow):
         file.open(QtCore.QFile.ReadOnly)
         styleSheet = file.readAll()
         file.close()
-        try:
-            # Python v2.
-            styleSheet = unicode(styleSheet, encoding='utf8')
-        except NameError:
-            # Python v3.
-            styleSheet = str(styleSheet, encoding='utf8')
+        styleSheet = str(styleSheet, encoding='utf8')
         return styleSheet
 
     @QtCore.pyqtSlot()
@@ -180,22 +170,46 @@ class MainWindow(QtGui.QMainWindow):
     def on_addListBtn_clicked(self):
         """添加清单"""
         # 先弹出一个命名窗口
-        print('addlist')
+        dlg = NewListDlg(self)
+        dlg.exec_()
 
-    #        title = self.ui.addSubtaskLE.text()
-    #        #TODO: 最好做一个重名检查
-    #        item = QtGui.QListWidgetItem(self.ui.subtaskLW)
-    #        sid = None
-    #        while True:
-    #            sid = """13%s""" % getOnlineId()
-    #            if sid not in self.subtasks.keys():
-    #                break
-    #        item.setText(title)
-    #        item.setData(32, sid)
-    #        subtask = Subask(onlineId=sid, title=title, parentId=self.curTaskId)
-    #        self.se.add(subtask)
-    #        self.se.commit()
-    #        self.subtasks[sid] = title #更新self.tasks
+    def addList(self, title):
+        """响应newList的回调"""
+        self.add(title, '27', self.lists, self.ui.listLW, List)
+        print(self.lists)
+
+    def add(self, title, prefix, lists, base, obj=None, parentId=None, batch=None):
+        """通用新增数据方法"""
+        if title not in lists.values():
+            tid = self.getOnlineId(prefix, lists)
+            print(tid)
+            if obj:  # 有控件传入,则给控件新增item
+                item = QtGui.QListWidgetItem(obj)
+                item.setText(title)
+                item.setData(32, tid)
+            if parentId:
+                line = base(
+                        onlineId=tid,
+                        title=title,
+                        parentId=parentId,
+                        )
+            else:
+                line = base(
+                        onlineId=tid,
+                        title=title,
+                        )
+            self.se.add(line)
+            lists[tid] = title  # 更新self.tasks
+            if not batch:
+                self.se.commit()
+
+    def getOnlineId(self, prefix, lists):
+        """通用方法, 根据前缀prefix返回onlineId"""
+        while True:
+            tid = """%s%s""" % (prefix, getOnlineId())
+            if tid not in lists.keys():
+                break
+        return tid
 
     @QtCore.pyqtSlot()
     def on_manageListBtn_clicked(self):
@@ -296,28 +310,27 @@ class MainWindow(QtGui.QMainWindow):
         # le为LineEdit控件
         # lw为ListWidget控件
         title = name
+        batch = True
         if not name:
             title = le.text()
-        if title not in self.tasks.values():
-            item = QtGui.QListWidgetItem(lw)
-            # TODO: id应做成一个通用的方法
-            taskId = None
-            while True:
-                id = """23%s""" % getOnlineId()
-                if id not in self.tasks.keys():
-                    break
-            item.setText(title)
-            item.setData(32, taskId)
-            task = Task(
-                    onlineId=taskId,
-                    title=title,
-                    parentId=self.curListId,
-                    )
-            self.se.add(task)
-            self.tasks[taskId] = title  # 更新self.tasks
-            if not name:  # 传入title的话,表示要批量处理
-                self.se.commit()
-                le.clear()
+            le.clear()
+            batch = None
+        self.add(title, '23', self.tasks, Task, lw, self.curListId, batch)
+        # if title not in self.tasks.values():
+        #     item = QtGui.QListWidgetItem(lw)
+        #     # TODO: id应做成一个通用的方法
+        #     taskId = self.getOnlineId('23', self.tasks)
+        #     item.setText(title)
+        #     item.setData(32, taskId)
+        #     task = Task(
+        #             onlineId=taskId,
+        #             title=title,
+        #             parentId=self.curListId,
+        #             )
+        #     self.se.add(task)
+        #     self.tasks[taskId] = title  # 更新self.tasks
+        #     if not name:  # 传入title的话,表示要批量处理
+        #         self.se.commit()
 
     @QtCore.pyqtSlot()
     def on_addListTaskLE_returnPressed(self):
@@ -326,13 +339,12 @@ class MainWindow(QtGui.QMainWindow):
 
     @QtCore.pyqtSlot()
     def on_addTaskLE_returnPressed(self):
-        print("in")
+        """用le添加任务"""
         self.addTask(self.ui.addTaskLE, self.ui.taskLW)
 
     @QtCore.pyqtSlot()
     def on_importBtn_clicked(self):
         """导入任务@指定清单"""
-        #        file = './import_test.txt'
         file = getOpenFileName('打开文件', None, 'file', self)
         df = pd.read_table(file)
         for i in df.values:
@@ -346,20 +358,18 @@ class MainWindow(QtGui.QMainWindow):
         unitId = self.ui.unitCombo.itemData(
                 self.ui.unitCombo.currentIndex()
                 )
-        if title not in self.units.values():
-            while True:
-                unitId = """14%s""" % getOnlineId()
-                if unitId not in self.units.keys():
-                    break
-            unit = Unit(
-                    onlineId=unitId,
-                    title=title,
-            )
-            self.se.add(unit)
-            self.se.commit()
+        self.add(title, '14', self.units, Unit)
+        # if title not in self.units.values():
+        #     unitId = self.getOnlineId('14', self.units)
+        #     unit = Unit(
+        #             onlineId=unitId,
+        #             title=title,
+        #             )
+        #     self.se.add(unit)
+        #     self.se.commit()
 
         self.db.update(List, self.curListId, 'unitId', unitId)  # 将id作为当前清单的unitId
-        self.units[unitId] = title
+        # self.units[unitId] = title
         resetCombo(self.ui.unitCombo, self.units, True, unitId, 'findData')
 
     @QtCore.pyqtSlot()
@@ -423,21 +433,17 @@ class MainWindow(QtGui.QMainWindow):
 
     @QtCore.pyqtSlot()
     def on_addSubtaskLE_returnPressed(self):
-        # TODO: 添加清单
+        """添加子任务"""
         title = self.ui.addSubtaskLE.text()
-        # TODO: 最好做一个重名检查
-        item = QtGui.QListWidgetItem(self.ui.subtaskLW)
-        # subtaskId = None
-        while True:
-            subtaskId = """13%s""" % getOnlineId()
-            if subtaskId not in self.subtasks.keys():
-                break
-        item.setText(title)
-        item.setData(32, subtaskId)
-        subtask = Subtask(onlineId=subtaskId, title=title, parentId=self.curTaskId)
-        self.se.add(subtask)
-        self.se.commit()
-        self.subtasks[subtaskId] = title  # 更新self.tasks
+        # item = QtGui.QListWidgetItem(self.ui.subtaskLW)
+        self.add(title, '13', self.subtasks, Subtask, self.ui.subtaskLW, self.curTaskId)
+        # subtaskId = self.getOnlineId('13', self.subtasks)
+        # item.setText(title)
+        # item.setData(32, subtaskId)
+        # subtask = Subtask(onlineId=subtaskId, title=title, parentId=self.curTaskId)
+        # self.se.add(subtask)
+        # self.se.commit()
+        # self.subtasks[subtaskId] = title  # 更新self.tasks
 
     @QtCore.pyqtSlot()
     def on_addSubtaskBtn_clicked(self):
@@ -552,12 +558,7 @@ class MainWindow(QtGui.QMainWindow):
         # TODO: 可以增加40-50秒以上算作一分钟的设置
         # 不足一分钟提示
         text = self.ui.recordTitleLbl.text()
-        recordId = None
-        while True:
-            recordId = """33%s""" % getOnlineId()
-            if recordId not in self.records.keys():
-                break
-                #        today = datetime.now()
+        recordId = self.getOnlineId('33', self.records)
         # 计算时间
         if self.sec >= 45:
             self.min += 1
