@@ -35,7 +35,8 @@ class List(Base):
     id = Column(Integer, primary_key=True)
     onlineId = Column(Text)
     title = Column(Text)
-    unitId = Column(Text, ForeignKey('Unit.onlineId'))
+    unitId = Column(Text, ForeignKey('Unit.onlineId'), default="1450386127")
+    listType = Column(Text, default="LIST")
     createdAt = Column(DateTime, default=datetime.now)
     updatedAt = Column(DateTime, default=datetime.now)
 

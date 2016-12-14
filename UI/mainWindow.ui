@@ -977,7 +977,7 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>5</number>
           </property>
           <widget class="QWidget" name="homePage">
            <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1063,7 +1063,11 @@
              </layout>
             </item>
             <item>
-             <widget class="QListWidget" name="taskLW"/>
+             <widget class="QListWidget" name="taskLW">
+              <property name="alternatingRowColors">
+               <bool>true</bool>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>
@@ -1110,6 +1114,29 @@
                   <property name="bottomMargin">
                    <number>5</number>
                   </property>
+                  <item>
+                   <spacer name="horizontalSpacer_7">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Fixed</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>11</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="taskCB">
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
                   <item>
                    <widget class="QLineEdit" name="taskLE">
                     <property name="minimumSize">
@@ -1284,6 +1311,9 @@
                     <width>11666</width>
                     <height>48</height>
                    </size>
+                  </property>
+                  <property name="alternatingRowColors">
+                   <bool>true</bool>
                   </property>
                  </widget>
                 </item>
@@ -1722,6 +1752,9 @@
                 <height>16777215</height>
                </size>
               </property>
+              <property name="alternatingRowColors">
+               <bool>true</bool>
+              </property>
              </widget>
             </item>
             <item>
@@ -1829,7 +1862,7 @@
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_8">
                 <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_22">
+                 <layout class="QHBoxLayout" name="horizontalLayout_11">
                   <item>
                    <widget class="QLabel" name="label_12">
                     <property name="sizePolicy">
@@ -1897,6 +1930,19 @@
                 </item>
                 <item>
                  <layout class="QVBoxLayout" name="resultLayout"/>
+                </item>
+                <item>
+                 <spacer name="verticalSpacer_3">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>521</height>
+                   </size>
+                  </property>
+                 </spacer>
                 </item>
                </layout>
               </widget>

@@ -355,7 +355,7 @@ QListWidget{
 }
 
 QListWidget::item{
-    padding-left: 15px;
+    /*padding-left: 15px;*/
     height: 41px;
     color: #5C4C4C;
 }

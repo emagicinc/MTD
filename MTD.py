@@ -33,6 +33,7 @@ WM_HOTKEY = 0x0312
 PixmapCache.addSearchPath(":/images")
 PixmapCache.addSearchPath("./background")
 
+
 class MainWindow(QtGui.QMainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent,
@@ -41,52 +42,12 @@ class MainWindow(QtGui.QMainWindow):
         self.ui = Ui_MainWindow()
         self.setPostition()
         self.ui.setupUi(self)
-        #        self.styleDict = {
-        #            "系统":"windows",
-        #            "清新":"cleanlooks",
-        #            "塑质":"plastique",
-        #            "Motif":"Motif",
-        #            "通用":"CDE"
-        #            }
         self.curFile = None
         self.setWindowIcon(QtGui.QIcon(':/images/icon.png'))
         self.progName = "MTD"
         self.ver = "V 1.0.0"
         self.setWindowTitle("""%s   %s""" % (self.progName, self.ver))
 
-        #######新参数#######
-        # self.itemId = None  # 表示新增item
-        # self.audioList = None
-        # self.imageList = None
-        # self.allItems = {}  # 将练习ID存入以章节ID为key的字典
-        # self.curChap = None  # 用来储存当前章节Item
-        # self.curChapId = Prefs.getCourse("curChap")  # 用来储存当前章节ID,为空时将页面添加到文档末
-        # self.itemList = []  # 用来储存当前课程章节树中点击过的item
-        # self.posList = []  # 第3列章节ID值,用于重载时判断是否选中
-        # self.selItems = []  # 选中的页面列表,以Item的方式,这是准备用来删除或移动操作的
-        # # 尝试启用新的参数
-        # self.chapDict = None  # 储存章节的父ID信息,此ID并非页面ID,如果此值不为0,则表示不是顶层章节
-        # self.chapIdDict = None  # 储存页面ID和章节ID的对应关系,用于课程列表编辑器
-        # self.chapOrder = []  # 章节顺序,用于排列章节,以便输出时遵循
-        # self.allItems = None  # 以ID为Key,id/name对列表为value的字典,用于展开,可看作练习id总表
-        # self.childDict = None  # 以父章节为key,子章节列表为value的字典,主要用于校验chapDict
-        # self.chapInfoDict = {}  # 150108新增,键为章节ID,值为Item,用于数据库模式章节初始化/课程制作模块章节初始化
-        # self.chapElemDict = {}  # 150110新增,键为章节ID,值为courseList的elem,用于创建课程列表时定位父节点
-        # # 原属configDlg的
-        # self.guidDict = None  # guid字典[id] = guid
-        # self.pathDict = None  # 路径字典[id] = path
-        #
-        # self.method_name()
-        # self.confDict = {}  # 划词助手的模型参数
-        #
-        # self.cxn = None  # 数据库连接
-        # self.cur = None  # 数据库指针，cursor
-        # self.curDb = None  # 当前使用的DB类型,system, user，用来判断是否要重连数据库
-        # self.curCourseId = None
-        # self.today = QtCore.QDate.currentDate().toString("yyyy-MM-dd")  # 主要用于数据库LastRep数据
-        #
-        # '''信号，表示初始化完成，根据此信号初始化模式，连接数据库,置为None是为了防止初始化控件时执行refreshMode代码'''
-        # self.INITIALIZED = None
         self.db = DB("./mtdo.db")  # 以下测试全部通过
         self.se = self.db.se
         # 获取当前任务ID:title的字典
@@ -116,8 +77,8 @@ class MainWindow(QtGui.QMainWindow):
         self.settingsStyle = self.loadStyleSheet('./qss/emagic.settings.qss')  # TODO:临时修改
         self.topStyle = self.loadStyleSheet('./qss/emagic.top.qss')
         self.leftStyle = self.loadStyleSheet('./qss/emagic.left.qss')
-        self.mainStyle = self.loadStyleSheet('./qss/emagic.main.qss')  #TODO:临时修改,需要修改路径,重新编译
-        self.stkStyle = self.loadStyleSheet('./qss/emagic.stk.qss')  #TODO:临时修改,需要修改路径,重新编译
+        self.mainStyle = self.loadStyleSheet('./qss/emagic.main.qss')  # TODO:临时修改,需要修改路径,重新编译
+        self.stkStyle = self.loadStyleSheet('./qss/emagic.stk.qss')  # TODO:临时修改,需要修改路径,重新编译
         #        self.dlgStyle = self.loadStyleSheet(':/qss/emagic.dlg.qss')#各设置窗口
         self.centralStyle = self.loadStyleSheet(':/qss/emagic.central.qss')  # 主体部分
         self.ui.configWidget.setStyleSheet(self.settingsStyle)
@@ -169,39 +130,40 @@ class MainWindow(QtGui.QMainWindow):
     @QtCore.pyqtSlot()
     def on_addListBtn_clicked(self):
         """添加清单"""
-        # 先弹出一个命名窗口
         dlg = NewListDlg(self)
         dlg.exec_()
 
     def addList(self, title):
         """响应newList的回调"""
-        self.add(title, '27', self.lists, self.ui.listLW, List)
-        print(self.lists)
+        item = self.add(title, '27', self.lists, List, self.ui.listLW)
+        listIcon = QtGui.QIcon(PixmapCache.getIcon('list.png'))
+        item.setIcon(listIcon)
 
-    def add(self, title, prefix, lists, base, obj=None, parentId=None, batch=None):
+    def add(self, name, prefix, lists, base, obj=None, parentId=None, batch=None):
         """通用新增数据方法"""
-        if title not in lists.values():
+        if name not in lists.values():
+            item = None
             tid = self.getOnlineId(prefix, lists)
-            print(tid)
             if obj:  # 有控件传入,则给控件新增item
                 item = QtGui.QListWidgetItem(obj)
-                item.setText(title)
+                item.setText(name)
                 item.setData(32, tid)
             if parentId:
                 line = base(
                         onlineId=tid,
-                        title=title,
+                        title=name,
                         parentId=parentId,
                         )
             else:
                 line = base(
                         onlineId=tid,
-                        title=title,
+                        title=name,
                         )
             self.se.add(line)
-            lists[tid] = title  # 更新self.tasks
+            lists[tid] = name  # 更新self.tasks
             if not batch:
                 self.se.commit()
+            return item
 
     def getOnlineId(self, prefix, lists):
         """通用方法, 根据前缀prefix返回onlineId"""
@@ -426,7 +388,7 @@ class MainWindow(QtGui.QMainWindow):
             self.__setItem(k, v, self.ui.subtaskLW)
 
     @QtCore.pyqtSlot()
-    def on_taskLE_edittingFinished(self):
+    def on_taskLE_editingFinished(self):
         """修改任务名称"""
         title = self.ui.taskLE.text()
         self.db.update(Task, self.curTaskId, 'title', title)
